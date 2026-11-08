@@ -752,6 +752,387 @@ span.cell:hover{outline:none}
 .ld-dr-submit:hover{background:var(--accent-hover);border-color:var(--accent-hover);color:var(--accent-ink)}
 .ld-dr-sign{scroll-margin-top:calc(var(--ld-dr-head,65px) + 16px)}
 
+/* ------------------------------------------------------------ Seller: Add a placement (seller/placement-new.html) and Inventory seasons
+   pn- = the Add a placement page: stepper, steps, tiles, day toggles, switches, the live side panel and the schedule preview.
+   inv- = Inventory additions: Seasons and dates off, the season marks over the calendar weeks, the Edit week groups. */
+.pn [hidden]{display:none!important}
+.pn{display:flex;flex-direction:column;gap:16px}
+
+/* the stepper: five steps, the current one navy, the ones done ticked */
+.pn-stepper{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:6px}
+.pn-stepper ol{list-style:none;margin:0;padding:0;display:flex;gap:4px}
+.pn-stepper li{flex:1 1 0;min-width:0;position:relative}
+.pn-stepper a{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;text-decoration:none;color:var(--ink-2);min-width:0;height:100%}
+.pn-stepper a:hover{background:var(--surface-2);color:var(--ink)}
+.pn-n{flex:none;width:28px;height:28px;border-radius:999px;display:grid;place-items:center;font-family:var(--font-num);font-size:12.5px;font-weight:500;
+  border:1.5px solid var(--line-2);color:var(--muted);background:#fff;transition:background .2s,border-color .2s,color .2s}
+.pn-st{display:flex;flex-direction:column;min-width:0;line-height:1.3}
+.pn-st b{font-size:13px;font-weight:600;color:var(--ink)}
+.pn-st small{font-size:11.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pn-stepper a[aria-current="step"]{background:var(--surface-2);box-shadow:inset 0 -2px 0 var(--gold)}
+.pn-stepper a[aria-current="step"] .pn-n{background:var(--ink);border-color:var(--ink);color:#fff}
+.pn-stepper li.pn-done .pn-n{background:var(--ok-bg);border-color:var(--ok);color:var(--ok);font-size:0}
+.pn-stepper li.pn-done .pn-n::after{content:"✓";font-size:13px;font-family:var(--font-ui);font-weight:700}
+.pn-stepper li.pn-bad .pn-n{border-color:var(--warn-line);color:var(--warn);background:var(--warn-bg)}
+
+/* steps: one panel each; Back and Next in a footer (shown only when the page script runs) */
+.pn-step{scroll-margin-top:16px}
+.pn-step .panel-h h2:focus{outline:none}
+.pn-step .panel-h h2:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+.pn-step .panel-b{gap:18px;padding:18px 18px 20px}
+.pn-of{font-family:var(--font-num);font-size:11.5px}
+.pn-foot{display:none}
+.pn-js .pn-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 18px;border-top:1px solid var(--line);background:var(--surface-2)}
+.btn.pn-next{background:var(--ink);border-color:var(--ink);color:#fff;box-shadow:0 1px 0 rgba(0,0,0,.08)}
+.btn.pn-next:hover{background:var(--accent-hover);border-color:var(--accent-hover);color:#fff}
+.btn.pn-next::after{content:"→";font-weight:500}
+.pn-jsonly{display:none}
+.pn-js .pn-jsonly{display:inline-flex}
+.pn-js .pn-ch{display:none}
+.pn-js .pn-form > .pn-step:not([hidden]){animation:pn-in .22s ease-out}
+@keyframes pn-in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* groups of choices */
+.pn-fs{border:0;margin:0;padding:0;min-width:0}
+.pn-fs > legend{padding:0;margin-bottom:8px;font-size:12.5px;font-weight:600;color:var(--ink-2)}
+.pn-fs > .pn-hint,.pn-fs > .pn-err,.pn-fs > .check + .pn-hint{display:block;margin-top:8px}
+.pn-hint{font-size:12px;color:var(--muted);line-height:1.45}
+.pn-sub{margin:12px 0 8px;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+.pn-fs > .pn-sub:first-of-type{margin-top:0}
+.pn-err{display:block;font-size:12px;font-weight:600;color:var(--bad)}
+.pn [aria-invalid="true"]{border-color:var(--bad)!important;box-shadow:0 0 0 1px var(--bad)}
+.pn .field > label{font-size:12.5px;color:var(--ink-2)}
+.pn .field input,.pn .field select{min-width:0;width:100%}
+.pn .field input.pn-short,.pn-in.pn-short{width:110px}
+.pn-in{font:inherit;font-size:14px;color:var(--ink);background:var(--surface);border:1px solid var(--line-2);border-radius:var(--radius-sm);padding:8px 10px;min-width:0}
+.pn-in.num{font-family:var(--font-num)}
+/* a date field keeps its gold ring while focus is on its calendar button too (there the field matches only :focus-within) */
+.pn input[type="date"]:focus-within,[data-inv-apply] input[type="date"]:focus-within{outline:2px solid var(--gold);outline-offset:2px}
+.pn-three{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(150px,100%),1fr));gap:12px}
+.pn-two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+
+/* tiles: outlet, type and how it sells */
+.pn-tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(200px,100%),1fr));gap:8px}
+.pn-outlets,.pn-modes{grid-template-columns:repeat(auto-fit,minmax(min(220px,100%),1fr))}
+.pn-tile{position:relative;display:block;cursor:pointer;min-width:0}
+.pn-tile input,.pn-seg input,.pn-day input,.pn-sw input,.inv-sw input{position:absolute;opacity:0;width:1px;height:1px;margin:0;pointer-events:none}
+.pn-tile-b{display:flex;align-items:center;gap:10px;height:100%;padding:11px 36px 11px 12px;border:1px solid var(--line-2);border-radius:9px;background:#fff;
+  transition:border-color .15s,box-shadow .15s,background .15s;position:relative}
+.pn-tile:hover .pn-tile-b{border-color:var(--ink-2)}
+.pn-tile input:checked + .pn-tile-b{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink),0 6px 16px -12px rgba(22,33,62,.45);background:var(--surface)}
+.pn-tile input:checked + .pn-tile-b::after{content:"✓";position:absolute;top:9px;right:10px;width:18px;height:18px;border-radius:999px;background:var(--ink);color:#fff;
+  font-size:11px;font-weight:700;display:grid;place-items:center}
+.pn-tile input:focus-visible + .pn-tile-b{outline:2px solid var(--gold);outline-offset:2px}
+.pn-tile-t{display:flex;flex-direction:column;min-width:0;line-height:1.35}
+.pn-tile-t b{font-size:13.5px;font-weight:600;color:var(--ink)}
+.pn-tile-t small{font-size:11.5px;color:var(--muted)}
+.pn-tile-t .pn-ch{font-size:9.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--gold-deep)}
+.pn-modes .pn-tile-b{align-items:flex-start;padding-top:12px;padding-bottom:12px}
+
+/* a row of radio buttons drawn as a segmented control */
+.pn-seg{display:inline-flex;flex-wrap:wrap;background:var(--surface);border:1px solid var(--line-2);border-radius:8px;padding:3px;gap:2px;max-width:100%}
+.pn-seg label{position:relative;display:inline-flex}
+.pn-seg span{font-size:12.5px;font-weight:600;border-radius:6px;color:var(--ink-2);padding:7px 13px;cursor:pointer;white-space:nowrap;transition:background .15s,color .15s}
+.pn-seg label:hover span{background:var(--surface-2)}
+.pn-seg input:checked + span{background:var(--ink);color:#fff}
+.pn-seg input:focus-visible + span{outline:2px solid var(--gold);outline-offset:1px}
+.pn-step-amt{display:inline-flex;align-items:center;gap:6px;margin-inline-start:8px;vertical-align:middle;font-size:12.5px;color:var(--ink-2)}
+
+/* run days: Mon to Sun toggles, the weekend marked with a gold dot */
+.pn-days{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;max-width:460px}
+.pn-day{position:relative;min-width:0}
+.pn-day span{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;height:44px;border:1px solid var(--line-2);border-radius:8px;background:#fff;
+  font-size:12.5px;font-weight:600;color:var(--muted);cursor:pointer;transition:background .15s,color .15s,border-color .15s}
+.pn-day.pn-we span::after{content:"";width:5px;height:5px;border-radius:50%;background:var(--gold)}
+.pn-day:hover span{border-color:var(--ink-2);color:var(--ink)}
+.pn-day input:checked + span{background:var(--ink);border-color:var(--ink);color:#fff}
+.pn-day input:focus-visible + span{outline:2px solid var(--gold);outline-offset:2px}
+
+/* ends: none, on a date, after n weeks */
+.pn-ends{display:flex;flex-wrap:wrap;align-items:center;gap:10px 22px}
+.pn-radio{display:inline-flex;align-items:center;gap:8px;font-size:13px;cursor:pointer}
+.pn-radio input{width:16px;height:16px;margin:0;accent-color:var(--accent)}
+.pn-radio-x{display:inline-flex;align-items:center;gap:8px;font-size:13px;flex-wrap:wrap}
+.pn-radio-x.pn-off > input{opacity:.55}
+
+/* dates off: holidays and blackouts */
+.pn-hols{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(260px,100%),1fr));gap:6px 16px}
+.pn-hol{align-items:flex-start;font-size:13px}
+.pn-hol input{margin-top:2px;flex:none}
+.pn-hol b{font-weight:600}
+.pn-blks{display:flex;flex-direction:column;gap:8px}
+.pn-blk{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1.5fr) auto;gap:8px 10px;align-items:end;padding:10px 12px;border:1px dashed var(--line-2);border-radius:9px;
+  background:repeating-linear-gradient(135deg,transparent 0 6px,rgba(22,33,62,.025) 6px 7px),var(--surface)}
+.pn-blk .field > span{font-size:12px;color:var(--ink-2)}
+.pn-blk .field input{padding:7px 9px;font-size:13.5px}
+.pn-blk > .pn-err{grid-column:1/-1}
+.pn-blks + .pn-jsonly{margin-top:8px}
+
+/* price: the net line, series, seasonal pricing switches */
+#pn-net b{color:var(--top-ink);font-family:var(--font-num);font-weight:500}
+.pn-series{display:flex;align-items:flex-end;gap:10px 18px;flex-wrap:wrap}
+.pn-series > .check{flex:1 1 280px}
+.pn-series > .field{flex:0 1 180px}
+.pn-seasons{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:9px;background:#fff}
+.pn-ssn{display:flex;align-items:center;gap:8px 14px;flex-wrap:wrap;padding:10px 12px;border-bottom:1px solid var(--line)}
+.pn-ssn:last-child{border-bottom:0}
+.pn-ssn .pn-sw{flex:1 1 230px;min-width:0}
+.pn-ssn-hint{flex-basis:100%;padding-inline-start:46px}
+.pn-ssn > .pn-err{flex-basis:100%;padding-inline-start:46px}
+.pn-pct{display:inline-flex;align-items:center;gap:6px;font-family:var(--font-num);font-size:13px;color:var(--ink-2)}
+.pn-pct input{width:84px;font-family:var(--font-num)}
+.pn-pct input:disabled{opacity:.45}
+
+/* switches (Add a placement and Inventory) */
+.pn-sw,.inv-sw{position:relative;display:inline-flex;align-items:center;gap:12px;cursor:pointer;min-width:0}
+.pn-sw-ui,.inv-sw-ui{flex:none;position:relative;width:38px;height:22px;border-radius:999px;background:var(--line-2);transition:background .18s}
+.pn-sw-ui::after,.inv-sw-ui::after{content:"";position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(22,33,62,.35);transition:transform .18s}
+.pn-sw input:checked + .pn-sw-ui,.inv-sw input:checked + .inv-sw-ui{background:var(--ok)}
+.pn-sw input:checked + .pn-sw-ui::after,.inv-sw input:checked + .inv-sw-ui::after{transform:translateX(16px)}
+.pn-sw input:focus-visible + .pn-sw-ui,.inv-sw input:focus-visible + .inv-sw-ui{outline:2px solid var(--gold);outline-offset:2px}
+.pn-sw-t{display:flex;flex-direction:column;min-width:0;line-height:1.35}
+.pn-sw-t b{font-size:13.5px;font-weight:600}
+.pn-sw-t small{font-size:12px;color:var(--muted)}
+
+/* rules */
+.pn-cats{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(170px,100%),1fr));gap:6px 16px}
+
+/* review: four summaries with Edit links, then publish */
+.pn-review{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.pn-rv{border:1px solid var(--line);border-radius:9px;background:#fff;padding:12px 14px 14px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.pn-rv-h{display:flex;align-items:baseline;gap:8px}
+.pn-rv-h h3{margin:0;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2)}
+.pn-rv-h a{margin-inline-start:auto;font-size:12.5px;font-weight:600}
+.pn-rv dl.kv{font-size:12.5px;gap:5px 14px}
+.pn-rv dl.kv dd{min-width:0;overflow-wrap:anywhere}
+.pn-fix{margin:4px 0 0;padding-inline-start:18px;display:flex;flex-direction:column;gap:3px}
+.pn-step .btn:disabled{opacity:.45;cursor:not-allowed;box-shadow:none}
+
+/* the side panel: sticky beside the form on wide screens; under it when the columns wrap, the two panels side by side if they fit */
+.pn-cols{align-items:stretch;container-type:inline-size}
+.pn-stick{position:sticky;top:16px;display:flex;flex-direction:column;gap:16px}
+@container (max-width:959px){
+  .pn-cols > .pn-side{max-width:none;flex-basis:100%}
+  .pn-stick{position:static;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr));align-items:start}
+}
+.pn-bv{display:flex;flex-direction:column;gap:10px}
+.pn-bv-o{display:flex;align-items:center;gap:8px;font-size:13px}
+.pn-bv-o b{font-weight:600}
+.pn-bv-p{display:flex;flex-direction:column;gap:1px;padding-top:2px}
+.pn-bv-p b{font-family:var(--font-head);font-size:21px;font-weight:500;line-height:1.2;overflow-wrap:anywhere}
+.pn-bv-from{display:flex;align-items:baseline;gap:6px;flex-wrap:wrap}
+.pn-bv-from .num{font-size:19px}
+.pn-bv-cells{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.pn-bv-cells .cell{height:58px;padding:0 2px;text-align:center}
+.pn-bv-cells .cell i{font-style:normal;font-size:9.5px;color:var(--muted);white-space:nowrap}
+.pn-bv dl.kv{font-size:12px;gap:4px 12px;padding-top:10px;border-top:1px solid var(--line)}
+.pn-bv dl.kv dd{overflow-wrap:anywhere}
+
+/* the schedule preview: 8 weeks of days */
+.pn-cal{display:grid;grid-template-columns:42px repeat(7,minmax(0,1fr));gap:3px;align-items:center}
+.pn-gh{text-align:center;font-size:10px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);padding-bottom:3px}
+.pn-gh.pn-we{color:var(--gold-deep)}
+.pn-wk{font-family:var(--font-num);font-size:10.5px;color:var(--muted);white-space:nowrap}
+.pn-d{position:relative;display:flex;align-items:center;justify-content:center;height:26px;border-radius:5px;font-family:var(--font-num);font-size:11px;color:var(--line-2);border:1px solid transparent}
+.pn-d-run{background:var(--ink);color:#fff}
+.pn-d-later{border:1px dashed var(--ink-2);color:var(--ink-2)}
+.pn-d-soon{color:var(--muted);border:1px dotted var(--line-2)}
+.pn-d-hol,.pn-d-blk{background:var(--bad-bg);color:var(--bad)}
+.pn-d-blk{background:repeating-linear-gradient(135deg,var(--bad-bg) 0 4px,#F8EBE8 4px 7px)}
+.pn-d-hol::after,.pn-d-blk::after{content:"";position:absolute;inset:4px 5px;background:linear-gradient(to top right,transparent calc(50% - .8px),currentColor calc(50% - .8px),currentColor calc(50% + .8px),transparent calc(50% + .8px))}
+.pn-d-none{color:var(--muted);background:var(--surface-2)}
+.pn-d-out{color:var(--line)}
+.pn-d-up::before,.pn-d-down::before{content:"";position:absolute;top:2px;right:2px;width:6px;height:6px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 1px var(--surface)}
+.pn-d-down::before{background:#7FB59A}
+.pn-key{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:11.5px;color:var(--ink-2)}
+.pn-key span{display:inline-flex;align-items:center;gap:6px}
+.pn-key .pn-d{width:18px;height:14px;font-size:0;border-radius:3px}
+.pn-key .pn-d::after{inset:2px 3px}
+.pn-key .pn-d-up::before{top:-2px;right:-2px;width:6px;height:6px}
+.pn-count{margin:0;font-size:13px;font-weight:600;color:var(--ink);padding-top:10px;border-top:1px solid var(--line)}
+
+@media (max-width:860px){
+  .pn-st small{display:none}
+}
+@media (max-width:700px){
+  .pn-stepper a{padding:8px 6px;gap:6px;justify-content:center}
+  .pn-stepper li{flex:0 0 auto}
+  .pn-stepper li.pn-cur{flex:1 1 auto}
+  .pn-stepper li:not(.pn-cur) .pn-st{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}   /* hidden, but each link keeps its step name */
+  .pn-stepper li.pn-cur a{justify-content:flex-start}
+  .pn-step .panel-b{padding:16px}
+  .pn-types{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .pn-types .pn-tile-b{padding-right:30px}
+  .pn-two,.pn-review{grid-template-columns:minmax(0,1fr)}
+  .pn-blk{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+  .pn-blk .pn-blk-why{grid-column:1/-1}
+  .pn-blk [data-blk-remove]{grid-column:1/-1;justify-self:start}
+  .pn-ssn-hint,.pn-ssn > .pn-err{padding-inline-start:0}
+  .pn-stick{position:static}
+}
+@media (max-width:380px){
+  .pn-blk{grid-template-columns:minmax(0,1fr)}
+  .pn-days{gap:4px}
+  .pn-day span{font-size:11.5px;height:40px}
+  .pn-seg span{padding:7px 10px}
+  .pn-cal{grid-template-columns:40px repeat(7,minmax(0,1fr));gap:2px}
+  .pn-wk{font-size:10px}                    /* "16 Nov" fits its column instead of running under the Monday */
+  .pn-bv-cells{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (prefers-reduced-motion:reduce){
+  .pn *,.pn *::before,.pn *::after,.inv-sw-ui,.inv-sw-ui::after{animation:none!important;transition:none!important}
+}
+
+/* Inventory: the season marks over the weeks, Seasons and dates off, the Edit week groups */
+.inv-ssn{display:inline-block;margin-top:3px;font-style:normal;font-family:var(--font-num);font-size:10px;font-weight:500;line-height:15px;letter-spacing:0;color:var(--gold-deep);
+  background:var(--gold-soft);border:1px solid #E2CFA6;border-radius:999px;padding:0 6px;white-space:nowrap}
+.inv-ssn[hidden]{display:none}
+.legend b.inv-ssn{margin:0 6px 0 0;vertical-align:middle}
+.row.inv-season{gap:8px 14px;padding:12px 18px}
+.inv-season .t{flex:1 1 220px;min-width:0;display:flex;flex-direction:column;gap:1px}
+.inv-season .t b{font-weight:600}
+.inv-season .t > span{font-size:12.5px;color:var(--muted)}
+.inv-season.is-off .t,.inv-season.is-off .inv-eff{opacity:.5}
+.inv-eff{font-family:var(--font-num);font-size:12.5px;font-weight:500;padding:2px 10px;border-radius:999px;white-space:nowrap;min-width:64px;text-align:center}
+.inv-eff.up{background:var(--gold-soft);color:var(--gold-deep)}
+.inv-eff.down{background:var(--ok-bg);color:var(--ok)}
+.inv-eff.off{border:1px dashed var(--line-2);color:var(--ink-2);font-family:var(--font-ui);font-size:11.5px;font-weight:600}
+.inv-live:empty{display:none}
+.inv-live{color:var(--ink-2)}
+.inv-gh{display:flex;align-items:center;gap:10px;margin:6px 0 -2px;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.inv-gh::after{content:"";flex:1;height:1px;background:var(--line)}
+.inv-line{margin:-4px 0 0;font-size:12.5px;color:var(--gold-deep)}
+.inv-line b{font-weight:500}
+[data-inv-apply][hidden]{display:none}
+.inv-tabs{min-width:0;max-width:100%}
+@media (max-width:380px){.inv-tabs .seg{flex-wrap:wrap}}
+@media (max-width:560px){
+  .row.inv-season{padding:12px 16px}
+  .inv-season .t{flex-basis:calc(100% - 60px)}
+  .inv-season .inv-eff{margin-inline-start:50px}
+}
+
+/* ==== builder 2 · admin: Listings review, Team and roles, Platform settings (rv-) ==== */
+/* page tabs under the head: Decision queue / Listings review, Platform settings / Team and roles */
+.rv-tabs{margin-top:-6px}
+.rv-tabs a{display:inline-flex;align-items:center;gap:6px;min-height:40px;font-size:13.5px}
+.rv-n{font-family:var(--font-num);font-size:11px;font-weight:500;line-height:17px;padding:0 7px;border-radius:999px;background:var(--surface-2);border:1px solid var(--line);color:var(--ink-2)}
+.rv-tabs a[aria-current] .rv-n{background:var(--ink);border-color:var(--ink);color:#fff}
+/* one review: what was sent, the checks and the decisions */
+.rv-review{scroll-margin-top:16px}
+.rv-review .panel-h{align-items:center}
+.panel-h h2.rv-h{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;font-size:15px;font-weight:600;letter-spacing:0;text-transform:none;color:var(--ink);min-width:0}
+.rv-ref{font-size:11.5px;color:var(--muted);font-weight:500}
+.rv-name{font-weight:600;overflow-wrap:anywhere}
+.rv-two{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr));gap:18px 26px;align-items:start}
+.rv-col{display:flex;flex-direction:column;gap:10px;min-width:0}
+.rv-col dl.kv dd{overflow-wrap:anywhere}
+.rv-chks{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:9px;font-size:12.5px;line-height:1.5;color:var(--ink-2)}
+.rv-chk{display:grid;grid-template-columns:66px minmax(0,1fr);gap:10px;align-items:baseline}
+.rv-chk b{color:var(--ink)}
+.rv-st{display:inline-flex;align-items:center;justify-content:center;gap:3px;font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;border-radius:999px;padding:1px 6px;white-space:nowrap}
+.rv-chk.pass .rv-st{background:var(--ok-bg);color:var(--ok)} .rv-chk.pass .rv-st::before{content:"✓"}
+.rv-chk.flag .rv-st{background:var(--warn-bg);color:var(--warn)} .rv-chk.flag .rv-st::before{content:"!"}
+.rv-chk.note .rv-st{background:var(--info-bg);color:var(--info)} .rv-chk.note .rv-st::before{content:"i";font-style:italic;font-family:var(--font-head)}
+.rv-sug{margin:0;padding:10px 12px;background:var(--surface-2);border-radius:var(--radius-sm);font-size:13px;display:flex;flex-wrap:wrap;gap:2px 8px;align-items:baseline}
+.rv-sug .eyebrow{flex-basis:100%}
+.rv-acts{display:flex;flex-direction:column;gap:10px}
+details.rv-more{border:1px solid var(--line);border-radius:var(--radius-sm);background:var(--surface);padding:0 12px}
+details.rv-more > summary{cursor:pointer;font-weight:600;font-size:13px;min-height:42px;display:flex;align-items:center;gap:8px;list-style:none}
+details.rv-more > summary::-webkit-details-marker{display:none}
+details.rv-more > summary::before{content:"";width:7px;height:7px;border-right:2px solid var(--ink-2);border-bottom:2px solid var(--ink-2);transform:rotate(-45deg);transition:transform .15s}
+details.rv-more[open] > summary::before{transform:rotate(45deg)}
+details.rv-more > summary:focus-visible{outline:2px solid var(--gold);outline-offset:2px;border-radius:4px}
+details.rv-more[open]{padding-bottom:12px}
+details.rv-more > .field,details.rv-more > .btns,details.rv-more > .two,details.rv-more > .check{margin-bottom:10px}
+details.rv-more > :last-child{margin-bottom:0}
+.field textarea{resize:vertical;min-height:64px;font:inherit;font-size:13.5px}
+/* a select is as wide as its longest option: on a narrow phone it must shrink with its column instead */
+.rv-review .field,.rv-settings .field,#invite .field{min-width:0}
+.rv-review .field select,.rv-settings .field select,#invite .field select{width:100%;max-width:100%;min-width:0;text-overflow:ellipsis}
+/* the price strip: comparable range (band), its middle (tick), the rate card (diamond) and the asked price (dot) */
+.rv-strip{margin:0;display:flex;flex-direction:column;gap:4px}
+.rv-strip-svg{display:block;overflow:visible}
+.rv-base{stroke:var(--line-2);stroke-width:1}
+.rv-band{fill:#E2DDCD}
+.rv-mid{stroke:var(--ink-2);stroke-width:2;stroke-linecap:round}
+.rv-card{fill:var(--surface);stroke:var(--muted);stroke-width:2}
+.rv-dot{fill:var(--ink);stroke:var(--surface);stroke-width:2}
+.rv-dot.flag{fill:var(--bad)}
+.rv-lab{font-family:var(--font-num);font-size:12px;font-weight:500;fill:var(--ink)}
+.rv-key{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12px;color:var(--ink-2)}
+.rv-key li{display:inline-flex;align-items:flex-start;gap:6px;min-width:0}
+.rv-key i{margin-top:4px}
+.rv-key li > span{min-width:0}
+.rv-key b{font-weight:500;color:var(--ink);white-space:nowrap}
+.rv-far{color:var(--bad);font-weight:600}
+.rv-key i{display:inline-block;flex:none}
+.rv-key .k-dot{width:10px;height:10px;border-radius:50%;background:var(--ink)}
+.rv-key .k-dot.flag{background:var(--bad)}
+.rv-key .k-band{width:18px;height:9px;border-radius:2px;background:linear-gradient(var(--ink-2),var(--ink-2)) center/2px 100% no-repeat,#E2DDCD}
+.rv-key .k-card{width:8px;height:8px;margin:5px 2px 0;border:2px solid var(--muted);background:var(--surface);transform:rotate(45deg)}
+/* the held creative */
+.rv-file{flex:1;min-width:0;overflow-wrap:anywhere}
+.rv-ad{border:1px solid var(--line);border-radius:var(--radius);background:#fff;padding:22px 18px;min-height:190px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center}
+.rv-ad-k{font-family:var(--font-head);font-size:26px;font-weight:600;line-height:1.1;color:var(--ink)}
+.rv-ad-t{font-size:14px;font-weight:600;color:var(--ink-2)}
+.rv-ad-d{font-size:13px}
+.rv-ad-f{font-size:11.5px;color:var(--muted)}
+mark.rv-hit{background:var(--warn-bg);color:var(--warn);font-weight:600;padding:2px 5px;border-radius:3px;outline:2px dashed var(--warn-line);outline-offset:2px}
+dl.rv-std dt{color:var(--ink);font-weight:600}
+dl.rv-std dd .muted{display:block}
+/* team */
+.rv-who{display:flex;align-items:center;gap:10px;min-width:0}
+.rv-who > span:last-child{display:flex;flex-direction:column;gap:1px;min-width:0}
+.rv-who .chip{vertical-align:middle}
+.tbl td .rv-who .small{display:block;white-space:normal}
+.rv-inline{display:inline-flex}
+.rv-inline select{min-width:150px;padding:6px 8px;font-size:13px}
+.rv-inline select:disabled{opacity:.6}
+.rv-matrix th:not(:first-child),.rv-matrix td:not(:first-child){text-align:center}
+.rv-cnt{display:inline-block;margin-inline-start:6px;font-family:var(--font-num);font-weight:500;color:var(--muted)}
+.rv-yes{color:var(--ok);font-weight:700;font-size:15px}
+.rv-no{color:var(--line-2)}
+.rv-foot{border-top:1px solid var(--line)}
+/* tables whose cells hold visually hidden labels: keep those labels inside the scrolling table */
+.rv-tbl td,.rv-tbl th{position:relative}
+.rv-team td:nth-child(4),.rv-team td:nth-child(5){white-space:nowrap}
+.rv-anchor{scroll-margin-top:16px}
+/* settings */
+.rv-clocks{display:flex;flex-direction:column}
+.rv-clock{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(200px,1fr);gap:8px 18px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}
+.rv-clock:first-child{padding-top:0}
+.rv-clock > div{display:flex;flex-direction:column;gap:2px;min-width:0}
+.rv-clock .field{min-width:0}
+.rv-clock select{width:100%;min-width:0;max-width:100%}
+.rv-eg{margin:0;padding:10px 12px;background:var(--surface-2);border-radius:var(--radius-sm);font-size:13px;line-height:1.55}
+.rv-eg .eyebrow{display:block}
+.rv-weeks{display:grid;grid-template-columns:minmax(0,1fr);gap:12px}
+fieldset.rv-week{border:1px solid var(--line);border-radius:var(--radius-sm);margin:0;padding:8px 12px 12px;min-width:0}
+fieldset.rv-week legend{font-size:12px;font-weight:700;color:var(--ink-2);padding:0 6px}
+.rv-days{display:flex;flex-wrap:wrap;gap:6px}
+.rv-day{display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:0 10px;border:1px solid var(--line-2);border-radius:999px;font-size:12.5px;font-weight:600;color:var(--ink-2);cursor:pointer;background:var(--surface)}
+.rv-day input{width:15px;height:15px;margin:0;accent-color:var(--ink)}
+.rv-day:has(input:checked){background:var(--ink);border-color:var(--ink);color:#fff}
+.rv-day:has(input:checked) input{accent-color:#D4A55A}
+.rv-day:has(input:focus-visible){outline:2px solid var(--gold);outline-offset:2px}
+.rv-box{display:inline-flex;align-items:center;justify-content:center;min-width:40px;min-height:36px;cursor:pointer}
+.rv-box input{width:17px;height:17px;accent-color:var(--ink)}
+.rv-mail th:not(:first-child),.rv-mail td:not(:first-child){text-align:center;width:84px}
+.rv-mail td:first-child{min-width:230px}
+.rv-mail td:first-child .small{display:block;white-space:normal}
+.rv-dirty{color:var(--warn);font-weight:600}
+.rv-dirty:empty{display:none}
+.rv-settings .check{line-height:1.4}
+@media (max-width:700px){
+  .rv-clock{grid-template-columns:minmax(0,1fr)}
+  .rv-chk{grid-template-columns:58px minmax(0,1fr)}
+  .rv-ad-k{font-size:22px}
+  .rv-review .panel-h .r{margin-inline-start:0}
+}
+@media (prefers-reduced-motion:reduce){details.rv-more > summary::before{transition:none}}
+/* ==== end builder 2 ==== */
+
 /* ------------------------------------------------------------ landing: footer (G/landing.html)
    A navy footer like the hero and How it works: a ticker of what is on the desk now, the brand with two market clocks, the rate sheet,
    five link columns, three trust lines, and the base row (demo notice, language, social links, back to top). Classes start with ld-ft-. */
