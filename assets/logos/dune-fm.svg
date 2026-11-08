@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 64">
+<circle cx="31" cy="26" r="12" fill="#E3A53D"/><path d="M2 52 Q18 34 34 44 T64 40 V60 H2 Z" fill="#A33A22"/>
+<text x="76" y="38" font-family="'Helvetica Neue',Arial,Helvetica,sans-serif" font-weight="700" font-size="30" fill="#A33A22" textLength="92" lengthAdjust="spacingAndGlyphs">DUNE</text>
+<text x="76" y="57" font-family="'Helvetica Neue',Arial,Helvetica,sans-serif" font-weight="700" font-size="14" fill="#5A1F12" textLength="68" lengthAdjust="spacingAndGlyphs">FM 99.3</text>
+</svg>

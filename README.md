@@ -29,3 +29,5 @@ The demo clock starts on Saturday 31 October 2026.
 ## About this repository
 
 The pages are generated from the Nashr project's source (option G in `design-options/_build/g_site`) and copied here by `publish_g.py`. Changes made directly in this repository are overwritten by the next publish.
+
+Outlet logos are trademarks of their owners and are shown only to identify the outlets in this demo; their sources and licences are in [assets/logos/CREDITS.md](assets/logos/CREDITS.md). Four outlets (Gulf Business TV, Skyline FM 94.2, Dune FM 99.3, Falcon Business TV) are made up for the demo.

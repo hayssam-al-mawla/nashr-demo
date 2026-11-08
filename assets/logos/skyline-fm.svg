@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 64">
+<g fill="#6A4C93"><rect x="4" y="30" width="10" height="28" rx="1.5"/><rect x="16" y="18" width="10" height="40" rx="1.5"/><path d="M28 58 V16 L33 3 L38 16 V58 Z"/><rect x="40" y="26" width="10" height="32" rx="1.5"/></g>
+<text x="62" y="36" font-family="'Helvetica Neue',Arial,Helvetica,sans-serif" font-weight="700" font-size="27" fill="#6A4C93" textLength="112" lengthAdjust="spacingAndGlyphs">Skyline</text>
+<text x="62" y="56" font-family="'Helvetica Neue',Arial,Helvetica,sans-serif" font-weight="700" font-size="14" fill="#2E1F45" textLength="70" lengthAdjust="spacingAndGlyphs">FM 94.2</text>
+<path d="M186 22 a12 12 0 0 1 0 20 M194 15 a21 21 0 0 1 0 34" stroke="#B8863B" stroke-width="4" fill="none" stroke-linecap="round"/>
+</svg>
