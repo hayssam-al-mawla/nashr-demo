@@ -314,7 +314,7 @@
     const page = document.querySelector('[data-live-page]');
     if (page) page.innerHTML = { 'buyer-slot': buyerSlot, 'buyer-deal': buyerDeal, 'seller-deal': sellerDeal }[page.dataset.livePage]();
     document.querySelectorAll('[data-live-slot]').forEach(el => { const f = BLOCK[el.dataset.liveSlot]; if (f) el.innerHTML = f(); });
-    if (SHOT !== null) return;
+    if (SHOT !== null || C.bar === false) return;   // bar: false (option G) turns the floating box off; the pages still run the deal
     let b = document.getElementById('liveBar');
     if (!b) { const st = document.createElement('style'); st.textContent = CSS; document.head.appendChild(st); b = document.createElement('aside'); b.id = 'liveBar'; b.setAttribute('aria-label', 'Live demo deal'); document.body.appendChild(b); if (window.innerWidth < 700) b.classList.add('min'); }
     const min = b.classList.contains('min'); b.innerHTML = bar(); if (min) b.classList.add('min');

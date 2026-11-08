@@ -278,3 +278,41 @@ dl.money dd.tot{color:var(--top-ink)}
 .chip .num{text-transform:none;letter-spacing:0}
 [data-live-page]{display:flex;flex-direction:column;gap:20px}
 .ld-outlet .avatar{color:#fff;font-weight:600;font-size:10.5px}
+
+/* ------------------------------------------------------------ Market calendar: six months back and ahead (buyer/index.html) */
+.cal [hidden]{display:none!important}
+.cal-nav{display:flex;align-items:center;gap:10px 16px;flex-wrap:wrap;padding:12px 14px;border-bottom:1px solid var(--line)}
+.cal-nav .btns{display:flex;gap:6px;flex-wrap:nowrap}
+.cal-nav .btn:disabled{opacity:.45;cursor:default}
+.cal-range{font-family:var(--font-head);font-size:19px;font-weight:500;min-width:200px}
+.cal-months{display:flex;flex-wrap:wrap;align-items:center;gap:4px;margin-inline-start:auto}
+.cal-months .yr{font-size:11px;font-weight:600;color:var(--muted);margin:0 2px 0 6px}
+.cal-months .yr:first-child{margin-inline-start:0}
+.cal-months button{border:1px solid var(--line-2);background:var(--surface);color:var(--ink);border-radius:999px;padding:4px 10px;font:inherit;font-size:12px;font-weight:600;cursor:pointer}
+.cal-months button.past{color:var(--muted);border-style:dashed}
+.cal-months button[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
+.cal-h.past{color:var(--muted)}
+.cell.past{background:var(--surface-2);border-color:var(--line);color:var(--muted)}
+.cell.past b{color:var(--ink-2)}
+.cell.past.x{background:transparent;border-style:dashed}
+.cell.past.x b{color:var(--muted);font-weight:400}
+span.cell:hover{outline:none}
+.cell.me.past{background:var(--me-bg);border-color:var(--me-bg);color:var(--me-ink);opacity:.8}
+.cell.me.past b{color:inherit}
+
+/* ------------------------------------------------------------ My profile (me.html) and the avatar link in the top bar */
+.topbar .right .me{display:flex;align-items:center;gap:12px;color:inherit;text-decoration:none;border-radius:999px}
+.topbar .right .me:hover .avatar,.topbar .right .me[aria-current] .avatar{box-shadow:0 0 0 2px var(--gold)}
+.topbar .right .me:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+.avatar.has-photo{color:transparent;background-size:cover;background-position:center}
+.photo{display:flex;align-items:flex-start;gap:18px;flex-wrap:wrap}
+.photo-t{display:flex;flex-direction:column;gap:8px;flex:1;min-width:220px}
+.photo-t > b{font-size:16px}
+.g-sr{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.pw{display:flex;flex-direction:column;gap:12px}
+.pw-rules{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:4px;font-size:12.5px;color:var(--muted)}
+.pw-rules li::before{content:"○";display:inline-block;width:18px}
+.pw-rules li.ok{color:var(--ok)}
+.pw-rules li.ok::before{content:"✓"}
+.callout[hidden]{display:none}
+.photo .btn:disabled{opacity:.45;cursor:default}

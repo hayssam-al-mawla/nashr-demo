@@ -9,15 +9,20 @@ Nashr (نشر) is a marketplace for booking advertising space with publishers in
 | Site | Link | Signed in as |
 |---|---|---|
 | Landing page | [https://hayssam-al-mawla.github.io/nashr-demo/](https://hayssam-al-mawla.github.io/nashr-demo/) | a visitor |
-| Buyer | [buyer/index.html](https://hayssam-al-mawla.github.io/nashr-demo/buyer/index.html) | Northwind Fintech, a PR team |
-| Seller (publisher) | [seller/index.html](https://hayssam-al-mawla.github.io/nashr-demo/seller/index.html) | Gulf News Media |
-| Admin | [admin/index.html](https://hayssam-al-mawla.github.io/nashr-demo/admin/index.html) | the Nashr team |
+| Buyer | [buyer/index.html](https://hayssam-al-mawla.github.io/nashr-demo/buyer/index.html) | Lina Haddad, Northwind Fintech (a PR team) |
+| Seller (publisher) | [seller/index.html](https://hayssam-al-mawla.github.io/nashr-demo/seller/index.html) | Karim Nassar, Gulf News Media |
+| Admin | [admin/index.html](https://hayssam-al-mawla.github.io/nashr-demo/admin/index.html) | Sara Mansour, the Nashr team |
 
-The bar at the top of every page switches between the landing page and the three sites. Rules marked **Proposed** are suggested answers to open questions, not decisions yet.
+The switch at the bottom of every page moves between the landing page and the three sites. Rules marked **Proposed** are suggested answers to open questions, not decisions yet.
+
+## Also try
+
+- **The Market calendar** (the buyer's front page) pages six months back, showing what each slot sold for, and six months ahead to the end of April 2027, Ramadan included. Use **Earlier**, **Later** or a month.
+- **My profile**: click the avatar at the top right on any of the three sites to add a photo or change the password. The photo stays in your browser only.
 
 ## Try one deal end to end
 
-Open the buyer's [live demo slot](https://hayssam-al-mawla.github.io/nashr-demo/buyer/live-slot.html) and place a bid. The **Live demo deal** box in the bottom corner then says who acts next and links there: close the auction, accept as the publisher, confirm payment as the buyer, send and approve the creative, upload and approve the proof, until the money is released. Its skip buttons move the demo clock forward, for example to see what happens when the publisher does not answer in time. The deal is shared by the three sites and saved in your browser only; **Reset** starts again.
+Open the buyer's [live demo slot](https://hayssam-al-mawla.github.io/nashr-demo/buyer/live-slot.html), place a bid and choose **Close the auction now**. Then play each side in turn: as the publisher, open **Seller › Deals** and accept the deal; as the buyer, open it from **Inbox**, confirm payment and send the creative; as the publisher, approve the creative and submit the proof; as the buyer, approve the proof, and the money is released. The deal is shared by the three sites and saved in your browser only; **Start the demo again** at the end resets it.
 
 The demo clock starts on Saturday 31 October 2026.
 
