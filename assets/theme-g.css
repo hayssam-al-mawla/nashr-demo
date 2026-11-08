@@ -1470,6 +1470,206 @@ fieldset.rv-week legend{font-size:12px;font-weight:700;color:var(--ink-2);paddin
 }
 /* ==== end QA · admin upgrade ==== */
 
+/* ==== seller outlets · Your outlets (seller/outlets.html) and Add an outlet (seller/outlet-new.html) (po-) ====
+   po- = the portfolio page (totals, outlet cards, channel mix, renewals, settings) and the parts of the Add an outlet form that
+   Add a placement does not have (channel tiles with icons, the logo, the team, the buyer's card, the checklist). The form itself
+   wears the pn- styles of Add a placement: stepper, steps, tiles, segmented choices, switches, review and the sticky side panel. */
+.po-jsonly{display:none!important}
+.po-js .po-jsonly{display:flex!important}
+
+/* the totals: six tiles on a wide screen, three on a laptop or tablet, two on a phone */
+.po-kpis{grid-template-columns:repeat(6,minmax(0,1fr))}
+.po-kpis .kpi .d{line-height:1.45}
+@media (max-width:1240px){.po-kpis{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:700px){.po-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:400px){.po-kpis .kpi{padding:12px 12px}.po-kpis .kpi .v{font-size:16px}}
+
+/* the bar over the cards: the count, then the channel filter and the sort once the page script runs */
+.po-bar{row-gap:10px}
+.po-tools{margin-inline-start:auto;align-items:center;gap:10px 18px;flex-wrap:wrap}
+.po-sort{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;color:var(--muted);white-space:nowrap}
+.po-sort select{font:inherit;font-size:13px;color:var(--ink);background:var(--surface);border:1px solid var(--line-2);border-radius:var(--radius-sm);padding:6px 10px;max-width:100%}
+
+/* one card per outlet: the header (logo, name, chips, owner, links), its numbers, and the next thing it needs */
+.po-list{display:flex;flex-direction:column;gap:14px}
+.po-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);display:flex;flex-direction:column;min-width:0;scroll-margin-top:16px;
+  container-type:inline-size}
+.po-card[hidden]{display:none}
+.po-card-h{display:flex;align-items:center;gap:12px 16px;flex-wrap:wrap;padding:16px 18px}
+.po-logo{flex:none;display:grid;place-items:center;width:172px;height:64px;padding:8px 14px;background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.po-logo img{display:block;max-width:100%;height:auto}
+.po-logo .avatar{font-size:15px;letter-spacing:.02em}
+.po-id{flex:1 1 240px;min-width:0;display:flex;flex-direction:column;gap:4px}
+.po-name{display:flex;align-items:center;gap:6px 8px;flex-wrap:wrap}
+.po-name h3{margin:0 4px 0 0;font-family:var(--font-head);font-size:22px;font-weight:500;line-height:1.15;color:var(--ink);overflow-wrap:anywhere}
+.po-sub{font-size:12.5px;color:var(--muted);line-height:1.45}
+.po-links{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12.5px;font-weight:600;align-self:flex-start;padding-top:4px}
+.chip.po-st-draft{background:transparent;border:1px dashed var(--ink-2);color:var(--ink-2)}
+/* its numbers: a tile each, in rows that always fill (by the card's own width): five in a row; three with the earnings over two;
+   two with the earnings on a row of its own. The draft's four sections: four, or two and two. The hairlines are shadows. */
+.po-stats{margin:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));border-top:1px solid var(--line);overflow:hidden}
+.po-draft .po-stats{grid-template-columns:repeat(4,minmax(0,1fr))}
+@container (max-width:819px){
+  .po-stats{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .po-stats > .po-stat:first-child{grid-column:span 2}
+  .po-draft .po-stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .po-draft .po-stats > .po-stat:first-child{grid-column:auto}
+}
+@container (max-width:519px){
+  .po-stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .po-stats > .po-stat:first-child{grid-column:1/-1}
+}
+.po-stat{padding:12px 18px 13px;display:flex;flex-direction:column;gap:2px;min-width:0;box-shadow:1px 0 0 var(--line),0 1px 0 var(--line)}
+.po-stat dt{font-size:10.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+.po-stat dd{margin:0}
+.po-stat .po-v{font-family:var(--font-num);font-size:18px;color:var(--ink);white-space:nowrap}
+.po-stat .po-stat-s{font-size:12px;color:var(--muted);line-height:1.4}
+.po-next{display:flex;align-items:center;gap:10px 16px;flex-wrap:wrap;padding:12px 18px 14px;border-top:1px solid var(--line)}
+.po-next-t{flex:1 1 300px;min-width:0;display:flex;flex-direction:column;gap:2px;font-size:13px;color:var(--ink-2)}
+.po-next-t b{color:var(--ink);font-weight:600}
+.po-next .eyebrow{color:var(--gold-deep)}
+.po-next .eyebrow.warn{color:var(--warn)} .po-next .eyebrow.ok{color:var(--ok)}
+.po-next .eyebrow .num{font-weight:600}
+/* the draft: a dashed card, its four sections in place of the numbers */
+.po-card.po-draft{border:1px dashed var(--line-2);box-shadow:none;background:repeating-linear-gradient(135deg,rgba(22,33,62,.024) 0 1px,transparent 1px 9px),var(--surface)}
+.po-draft .po-logo{border-style:dashed}
+.po-dstep .po-v{display:flex;align-items:center;gap:8px;font-family:var(--font-ui);font-size:14px;font-weight:600;white-space:normal}
+.po-dstep.is-missing .po-v{color:var(--warn)}
+
+/* the side: channel mix (ranked bars in one hue, every bar labelled), its table, renewals */
+.po-mix{display:block;width:100%;overflow:visible}
+.po-mix text{font-family:var(--font-ui);font-size:12.5px;fill:var(--ink)}
+.po-mix .po-mix-l{font-weight:600}
+.po-mix .po-mix-c{font-weight:400;fill:var(--muted)}
+.po-mix .po-mix-v{font-family:var(--font-num);font-size:12px;fill:var(--ink-2)}
+.po-mix .po-mix-t{fill:var(--surface-2)}
+.po-mix .po-mix-b{fill:var(--ink)}
+.po-mix g:hover .po-mix-b{fill:var(--gold-deep)}
+.po-more summary{cursor:pointer;font-size:12.5px;font-weight:600;color:var(--link);width:max-content;max-width:100%}
+.po-more[open] summary{margin-bottom:8px}
+table.tbl.po-tbl{min-width:0;font-size:12.5px}
+.po-tbl th,.po-tbl td{padding:8px 10px}
+.po-tbl tbody th,.po-tbl tfoot th{text-transform:none;letter-spacing:0;font-size:12.5px;font-weight:600;color:var(--ink);white-space:normal}
+.po-tbl tfoot th,.po-tbl tfoot td{background:var(--surface-2);border-top:1px solid var(--line-2);font-weight:700}
+.po-nw{white-space:nowrap}
+
+/* how an outlet goes live: a stage bar like a deal's, each stage with where your outlets are today */
+.po-flow-p{container-type:inline-size}
+.po-flow{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px 14px}
+@container (max-width:700px){.po-flow{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@container (max-width:380px){.po-flow{grid-template-columns:minmax(0,1fr)}}
+.po-flow li{border-top:3px solid var(--line);padding-top:10px;display:flex;flex-direction:column;gap:5px;min-width:0}
+.po-flow li.now{border-top-color:var(--gold)}
+.po-flow-h{display:flex;align-items:center;gap:8px}
+.po-flow-h b{font-size:13.5px;font-weight:600;color:var(--ink)}
+.po-flow-n{flex:none;width:22px;height:22px;border-radius:999px;display:grid;place-items:center;font-family:var(--font-num);font-size:11.5px;
+  border:1.5px solid var(--line-2);color:var(--muted);background:#fff}
+.po-flow li.now .po-flow-n{background:var(--ink);border-color:var(--ink);color:#fff}
+.po-flow-t{font-size:12.5px;color:var(--ink-2);line-height:1.45}
+.po-flow-c{margin-top:auto;padding-top:2px;font-size:12px;font-weight:600;color:var(--gold-deep)}
+
+/* each outlet's settings: two panels a row on a wide screen; the Settings link on a card rings its panel */
+.po-sets-h{margin-top:6px}
+.po-sets{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(440px,100%),1fr));gap:16px;align-items:start}
+.po-sets .panel{scroll-margin-top:16px}
+.po-sets .panel:target{box-shadow:0 0 0 2px var(--gold),var(--shadow)}
+.po-sets dl.kv{grid-template-columns:minmax(104px,auto) minmax(0,1fr);gap:8px 16px}
+.po-sets dl.kv dd{min-width:0;overflow-wrap:anywhere}
+.po-team-l{display:flex;flex-direction:column;gap:6px}
+.po-who{display:flex;align-items:center;gap:8px;font-size:13px;line-height:1.35}
+.po-who .avatar{font-size:9.5px}
+.po-who b{font-weight:600}
+
+/* Add an outlet: the draft bar, the channel tiles with their icons, the logo, the team, the side panel */
+.po-draftbar{flex-direction:row;align-items:center;gap:10px 16px;flex-wrap:wrap;background:var(--gold-soft);border:1px solid #E2CFA6}
+.po-draftbar-t{display:flex;flex-direction:column;gap:2px;flex:1 1 280px;min-width:0;color:var(--ink-2)}
+.po-draftbar-t b{color:var(--ink)}
+.po-kinds{grid-template-columns:repeat(3,minmax(0,1fr))}
+.po-kinds .pn-tile-b{gap:12px;padding:12px 34px 12px 12px}
+.po-ch-i{display:grid;place-items:center;width:38px;height:38px;border-radius:10px;background:var(--surface-2);color:var(--ink);transition:background .15s,color .15s}
+.pn-tile input:checked + .pn-tile-b .po-ch-i{background:var(--ink);color:#fff}
+.po-ico{display:block}
+.po-kinds .g-tag{margin-inline-start:4px}
+.po-mkts,.po-srcs,.po-owns,.po-pays{grid-template-columns:repeat(auto-fit,minmax(min(230px,100%),1fr))}
+.po-own-f,.po-audit,.po-connect{margin-top:12px}
+.po-lab{display:block;margin-bottom:8px;font-size:12.5px;font-weight:600;color:var(--ink-2)}
+.po-logo-up{display:flex;align-items:center;gap:12px 16px;flex-wrap:wrap}
+.po-logo-prev{border-style:dashed}
+.po-logo-t{display:flex;flex-direction:column;gap:6px;flex:1 1 240px;min-width:0}
+.po-logo-msg{margin:0;font-size:12.5px;color:var(--ink-2)}
+.po-logo-msg.ok{color:var(--ok)} .po-logo-msg.bad{color:var(--bad)}
+.po textarea{width:100%;min-height:76px;resize:vertical;line-height:1.45}
+.po input[type="file"]{font-size:12.5px;padding:6px;background:#fff}
+.po input[type="file"]::file-selector-button{font:inherit;font-weight:600;border:1px solid var(--line-2);background:var(--surface);color:var(--ink);border-radius:var(--radius-sm);
+  padding:5px 10px;margin-inline-end:10px;cursor:pointer}
+.po-file{font-size:12px;color:var(--ink-2);overflow-wrap:anywhere}
+.po-connect{display:flex;align-items:center;gap:8px 12px;flex-wrap:wrap}
+.po-ksa{color:var(--warn)}
+.po-team{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:9px;background:#fff}
+.po-mem{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:8px 12px;align-items:center;padding:12px 14px;border-bottom:1px solid var(--line)}
+.po-mem:last-child{border-bottom:0}
+.po-mem > .avatar{font-size:11px}
+.po-mem-t{display:flex;flex-direction:column;min-width:0;line-height:1.35}
+.po-mem-t b{font-size:13.5px;font-weight:600}
+.po-mem-t small{font-size:12px;color:var(--muted)}
+.po-rights{grid-column:2/-1;display:flex;flex-wrap:wrap;gap:6px 18px}
+.po-right{font-size:12.5px}
+.po-mem.is-off .po-rights{opacity:.5}
+.po-own-chip{justify-self:end}
+.po-sw .pn-sw-t b{font-size:12.5px}
+.po-inv-row{padding:0;border:0;margin-top:10px}
+.po-h3{margin:4px 0 0;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2)}
+.po-bv .outlet{box-shadow:none}
+.po-bv .o-logo img{max-height:40px;width:auto;max-width:170px}
+.po-bv .o-logo .avatar{font-size:13px}
+.po-bv .foot .btn{opacity:.6;cursor:default}
+.po-bv-rng{font-size:12.5px;color:var(--muted)}
+.po-todo{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px}
+.po-todo li{display:flex;gap:10px;align-items:flex-start;font-size:13px}
+.po-todo li > span:last-child{display:flex;flex-direction:column;gap:1px;min-width:0}
+.po-todo b{font-weight:600}
+.po-todo small{font-size:12px;color:var(--muted)}
+.po-todo a{font-size:12.5px;font-weight:600;width:max-content;max-width:100%}
+/* the state icons, drawn: a tick (done), a bar and a dot (missing), an empty ring (optional); the words beside them say the same */
+.po-todo-i{position:relative;flex:none;width:20px;height:20px;border-radius:999px;border:1.5px solid var(--line-2);color:var(--muted);background:#fff}
+.po-todo-ok .po-todo-i,.po-dstep .po-todo-i{background:var(--ok-bg);border-color:var(--ok);color:var(--ok)}
+.po-todo-ok .po-todo-i::after,.po-dstep .po-todo-i::after{content:"";position:absolute;left:5px;top:4.5px;width:7px;height:4px;border-left:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(-45deg)}
+.po-todo-x .po-todo-i,.po-dstep.is-missing .po-todo-i{background:var(--warn-bg);border-color:var(--warn-line);color:var(--warn)}
+.po-todo-x .po-todo-i::before,.po-dstep.is-missing .po-todo-i::before{content:"";position:absolute;left:50%;top:3.5px;width:2px;height:6.5px;margin-left:-1px;border-radius:1px;background:currentColor}
+.po-todo-x .po-todo-i::after,.po-dstep.is-missing .po-todo-i::after{content:"";position:absolute;left:50%;top:11.5px;width:2px;height:2px;margin-left:-1px;border:0;border-radius:1px;background:currentColor;transform:none}
+
+@media (max-width:700px){
+  .po-card-h{padding:14px 16px}
+  .po-logo{width:148px;height:56px;padding:8px 12px}
+  .po-stat{padding:11px 16px 12px}
+  .po-next{padding:12px 16px 14px}
+  .po-tools{margin-inline-start:0;width:100%}
+  .po-links{width:100%}
+}
+@media (max-width:560px){
+  .po-kinds{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .po-kinds .pn-tile-b{flex-direction:column;align-items:flex-start;gap:10px;padding-inline-end:30px}
+}
+@media (max-width:480px){
+  .po-stat{padding:10px 12px 11px}
+  .po-stat .po-v{font-size:16px}
+  .po-mem{grid-template-columns:auto minmax(0,1fr)}
+  .po-mem .po-sw,.po-own-chip{grid-column:2/-1;justify-self:start}
+  .po-sets dl.kv{grid-template-columns:minmax(0,1fr);gap:2px}
+  .po-sets dl.kv dd{margin-bottom:8px}
+}
+@media (prefers-reduced-motion:reduce){
+  .po-ch-i,.po-mix .po-mix-b{transition:none!important}
+}
+/* QA pass: an uploaded logo of any shape fits its box (the outlets' own logos keep their width and height attributes); licence and
+   VAT numbers stay on one line; on a phone Back and Next wrap instead of running out of the step; the numbers table fits a 320 screen */
+.po-logo img:not([width]){width:auto;height:auto;max-width:100%;max-height:46px}
+.po-sets dd .num,.po-port .side .row .num{white-space:nowrap}
+@media (max-width:700px){.po-logo img:not([width]){max-height:38px}}
+@media (max-width:480px){.po .pn-foot .btn{min-width:0;white-space:normal;text-align:center;line-height:1.25;padding-block:6px}}
+@media (max-width:400px){.po-tbl th,.po-tbl td{padding:8px 6px}}
+/* ==== end seller outlets ==== */
+
 /* ==== seller quote page (sq-) · seller/quote.html, built by _build/g_site/seller_quote.py ====
    The request header card with the reply ring and the deal path, the offer builder (day tiles, price chips, the navy run card with its
    budget bar, the switches, the message chips), You receive with the split bar, and the programme card. With reduced motion nothing
@@ -1725,3 +1925,27 @@ fieldset.rv-week legend{font-size:12px;font-weight:700;color:var(--ink-2);paddin
   .sq-day:hover .sq-day-b{transform:none}
 }
 /* ==== end seller quote page ==== */
+
+/* ==== admin Publishers: the search and quick filters on the fee table (pq-) ==== */
+.pq-bar{display:flex;align-items:center;flex-wrap:wrap;gap:10px 14px;padding:12px 16px;border-bottom:1px solid var(--line);background:var(--surface-2)}
+.pq-search{position:relative;flex:1 1 280px;max-width:440px}
+.pq-search svg{position:absolute;left:13px;top:50%;width:16px;height:16px;transform:translateY(-50%);fill:none;stroke:var(--muted);stroke-width:2;stroke-linecap:round;pointer-events:none}
+.pq-search input{width:100%;min-height:42px;padding:0 40px;border:1px solid rgba(90,96,128,.72);border-radius:999px;background:#fff;color:var(--ink);font:inherit;font-size:14px}
+.pq-search input::-webkit-search-cancel-button{display:none}
+.pq-search input:hover{border-color:var(--ink-2)}
+.pq-search input:focus-visible{outline:2px solid var(--gold-deep);outline-offset:2px;border-color:var(--ink)}
+.pq-clear{position:absolute;right:7px;top:50%;width:30px;height:30px;transform:translateY(-50%);border:0;border-radius:50%;background:transparent;color:var(--muted);font-size:20px;line-height:1;cursor:pointer}
+.pq-clear:hover{background:var(--surface-2);color:var(--ink)}
+.pq-clear:focus-visible{outline:2px solid var(--gold-deep);outline-offset:1px}
+.pq-chips{display:flex;flex-wrap:wrap;gap:6px}
+.pq-chips button{min-height:36px;padding:0 12px;border:1px solid var(--line-2);border-radius:999px;background:#fff;color:var(--ink-2);font:inherit;font-size:12.5px;font-weight:600;cursor:pointer}
+.pq-chips button:hover{border-color:var(--ink)}
+.pq-chips button[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
+.pq-chips button:focus-visible{outline:2px solid var(--gold-deep);outline-offset:2px}
+.pq-count{margin-inline-start:auto;font-size:12.5px;color:var(--muted);white-space:nowrap}
+.pq-t tr[hidden]{display:none}
+.pq-t .pq-grp{display:block;margin-top:1px;font-size:11.5px}
+mark.pq-hit{background:var(--gold-soft);color:inherit;border-radius:3px;padding:0 1px}
+.pq-empty{margin:0;padding:22px 16px;text-align:center;color:var(--muted);border-bottom:1px solid var(--line)}
+@media (max-width:640px){.pq-bar{padding:12px}.pq-search{flex-basis:100%;max-width:none}.pq-count{margin-inline-start:0}}
+/* ==== end admin Publishers search ==== */
