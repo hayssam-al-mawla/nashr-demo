@@ -1335,3 +1335,137 @@ fieldset.rv-week legend{font-size:12px;font-weight:700;color:var(--ink-2);paddin
   .pf-n-row{grid-template-columns:minmax(0,1fr) repeat(3,48px);gap:6px;padding:10px 12px}.pf-n-h{font-size:10px;letter-spacing:.02em}
   .pf-bank{flex-wrap:wrap}.pf-strength{min-width:0}}
 @media (prefers-reduced-motion:reduce){.pf-ring .p,.pf-meter i,.pf-track,.pf-track::after,.pf-mini span,.pf-mini span::after,.pf-cam{transition:none}}
+
+/* ------------------------------------------------------------ admin: Reports, the Operations charts and the search in the top bar (builder 1 · ar-) */
+/* the admin top bar: brand, nav, one search box, the signed-in person. Below 1180px the nav takes its own row, as on a phone. */
+.topbar.ar-top .topbar-in{gap:12px 18px}
+.topbar.ar-top .mainnav a{padding:8px 11px}
+.topbar.ar-top .right{margin-inline-start:0}
+.ar-search{position:relative;flex:0 1 230px;min-width:150px;margin-inline-start:auto}
+.ar-field{position:relative;display:block}
+.ar-search input{display:block;width:100%;height:36px;border-radius:8px;border:1px solid rgba(237,238,233,.24);background:rgba(255,255,255,.07);
+  color:#fff;font:inherit;font-size:13px;padding:0 30px 0 32px;-webkit-appearance:none;appearance:none}
+.ar-search input::placeholder{color:#AEB3CB;opacity:1}
+.ar-search input:focus{outline:2px solid #D4A55A;outline-offset:1px;background:#fff;border-color:#fff;color:var(--ink)}
+.ar-search input:focus::placeholder{color:var(--muted)}
+.ar-search input::-webkit-search-cancel-button{-webkit-appearance:none;appearance:none}
+.ar-ico{position:absolute;left:10px;top:50%;width:15px;height:15px;transform:translateY(-50%);fill:none;stroke:#AEB3CB;stroke-width:1.8;stroke-linecap:round;pointer-events:none}
+.ar-search:focus-within .ar-ico{stroke:var(--muted)}
+.ar-kbd{position:absolute;right:8px;top:50%;transform:translateY(-50%);font:600 11px/17px var(--font-num);color:#C8CCE0;border:1px solid rgba(237,238,233,.32);border-radius:4px;padding:0 5px;pointer-events:none}
+.ar-search:focus-within .ar-kbd{display:none}
+.ar-pop{position:absolute;top:calc(100% + 6px);right:0;width:min(440px,calc(100vw - 32px));background:var(--surface);color:var(--ink);border:1px solid var(--line);
+  border-radius:10px;box-shadow:0 18px 40px -12px rgba(22,33,62,.45);z-index:60;overflow:hidden}
+.ar-pop[hidden]{display:none}
+.ar-pop ul{list-style:none;margin:0;padding:6px;max-height:min(60vh,420px);overflow:auto}
+.ar-opt{display:grid;grid-template-columns:auto minmax(0,1fr);gap:1px 10px;align-items:baseline;padding:8px 10px;border-radius:7px;cursor:pointer}
+.ar-opt .ar-k{grid-row:span 2;align-self:start;margin-top:2px;font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;white-space:nowrap;
+  color:var(--gold-deep);background:var(--gold-soft);border-radius:999px;padding:1px 8px}
+.ar-opt b{font-size:13.5px;font-weight:600;color:var(--ink);overflow-wrap:anywhere}
+.ar-opt .ar-s{font-size:12px;color:var(--muted);overflow-wrap:anywhere}
+.ar-opt[aria-selected="true"]{background:var(--surface-2);box-shadow:inset 3px 0 0 var(--gold)}
+.ar-none{padding:12px 10px;font-size:13px;color:var(--muted)}
+.ar-all{display:block;padding:10px 16px;border-top:1px solid var(--line);font-size:12.5px;font-weight:600;color:var(--link);text-decoration:none}
+.ar-all:hover{background:var(--surface-2);color:var(--ink)}
+.ar-all:focus-visible{outline-offset:-2px}
+@media (max-width:1360px){ .topbar.ar-top .right .who{display:none} }
+@media (max-width:1180px){ .topbar.ar-top .mainnav{order:3;width:100%} .topbar.ar-top .mainnav a{padding:8px 9px} .ar-search{flex:1 1 220px;max-width:440px} }
+@media (max-width:700px){
+  .topbar.ar-top .topbar-in{position:relative}
+  .topbar.ar-top .mainnav a{padding:7px 9px}
+  .ar-search{position:static;flex:1 1 0;min-width:0;max-width:none}
+  .ar-kbd{display:none}
+  .ar-pop{left:0;right:0;width:auto;top:calc(100% + 2px)}
+}
+@media (max-width:360px){ .topbar.ar-top .brand .ar{display:none} .topbar.ar-top + .app-main .kpi .v{font-size:16px} }
+/* a deal or an outlet the search opened is marked on its page */
+.tbl tr[id]{scroll-margin-top:96px}
+.tbl tr:target td,.tbl tr:target th{background:var(--gold-soft)}
+
+/* Reports: the filter row scopes everything under it */
+.ar-filters{display:flex;flex-direction:column;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px 10px;box-shadow:var(--shadow)}
+.ar-f{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:flex-end}
+.ar-f .field{flex:1 1 170px;max-width:290px}
+.ar-f .field select{min-height:40px}
+.ar-showing{margin:0}
+/* charts: thin marks, hairline grid, the value on the largest and the latest mark, a tooltip on hover and keyboard focus */
+.ar-pair{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr));gap:18px 28px}
+.ar-fig{margin:0;display:flex;flex-direction:column;gap:6px;min-width:0}
+.ar-fig figcaption{display:flex;align-items:baseline;justify-content:space-between;gap:4px 10px;flex-wrap:wrap;font-size:11.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-2)}
+.ar-fig figcaption b{font-size:15px;font-weight:500;letter-spacing:0;text-transform:none;color:var(--ink)}
+.ar-chart{position:relative;min-width:0}
+.ar-svg{display:block;width:100%;height:auto;overflow:visible}
+.ar-svg:focus{outline:none}
+.ar-svg:focus-visible{outline:2px solid var(--gold);outline-offset:4px;border-radius:4px}
+.ar-svg text{font-family:var(--font-ui);font-size:11px;fill:var(--muted)}
+.ar-svg .tick,.ar-svg .val{font-family:var(--font-num);font-variant-numeric:tabular-nums}
+.ar-svg .val{fill:var(--ink-2);font-size:11.5px;font-weight:500}
+.ar-svg .lab{font-size:12px;fill:var(--ink-2)}
+.ar-svg .sub{font-size:11px}
+.ar-svg .gname{font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.ar-svg .mon.dim{opacity:.45}
+.ar-svg .grid{stroke:var(--line);stroke-width:1}
+.ar-svg .base{stroke:var(--line-2);stroke-width:1}
+.ar-svg .ref{stroke:var(--ink-2);stroke-width:1}
+.ar-svg .bar{fill:var(--ink)}
+.ar-svg .bar.fee{fill:var(--gold)}
+.ar-svg .bar.closed{fill:var(--line-2)}
+.ar-svg .bar.dim{opacity:.22}
+.ar-svg .bar.on{fill:var(--gold-deep)}
+.ar-svg .bar.fee.on{fill:#9A7230}
+.ar-svg .rng{stroke:var(--line-2);stroke-width:2;stroke-linecap:round}
+.ar-svg .pt{fill:var(--ink);opacity:.26}
+.ar-svg .med{fill:var(--ink);stroke:var(--surface);stroke-width:2}
+.ar-svg .med.on{fill:var(--gold-deep)}
+.ar-svg .hit{fill:transparent}
+.ar-tip{position:absolute;z-index:5;transform:translate(-50%,calc(-100% - 10px));pointer-events:none;background:var(--ink);color:#EDEEE9;border-radius:8px;
+  padding:7px 10px;font-size:12px;line-height:1.35;box-shadow:0 10px 24px -8px rgba(22,33,62,.5);width:max-content;max-width:min(300px,92%);text-align:center}
+.ar-tip[hidden]{display:none}
+.ar-tip b{display:block;font-family:var(--font-num);font-size:13px;font-weight:500;color:#fff}
+.ar-tip span{display:block;color:#C8CCE0}
+/* tables: the chart's numbers, a total row, a thin bar beside the money */
+.ar-tbl tbody th,.ar-tbl tfoot th{text-transform:none;letter-spacing:0;font-size:13px;font-weight:600;color:var(--ink);padding:10px 12px;border-bottom:1px solid var(--line)}
+.ar-tbl th .small{display:block;font-weight:400}
+.ar-tbl tfoot th,.ar-tbl tfoot td{background:var(--surface-2);border-top:1px solid var(--line-2);border-bottom:0;font-weight:700}
+.ar-tbl td{white-space:nowrap}
+.side .ar-tbl{min-width:0}
+.side .ar-tbl tbody th{white-space:normal}
+.side .ar-ib{width:36px;margin-inline-end:8px}
+.ar-tbl .rank{width:24px;flex:none}
+.ar-who{display:flex;align-items:baseline}
+.ar-nm{display:flex;flex-direction:column;min-width:0}
+.ar-ib{display:inline-block;width:56px;height:6px;border-radius:3px;background:var(--surface-2);margin-inline-end:10px;vertical-align:middle;overflow:hidden}
+.ar-ib i{display:block;height:100%;border-radius:3px;background:var(--ink)}
+.ar-more{border-top:1px solid var(--line);padding-top:10px}
+.ar-more summary{cursor:pointer;font-size:12.5px;font-weight:600;color:var(--link);width:max-content;max-width:100%}
+.ar-more[open] summary{margin-bottom:8px}
+.ar-how{margin:0;padding-inline-start:18px;display:flex;flex-direction:column;gap:6px;font-size:13px;color:var(--ink-2)}
+/* the search page (find.html) */
+.ar-find-form{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end}
+.ar-find-form .field{flex:1 1 280px;max-width:560px}
+.ar-groups{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(340px,100%),1fr));gap:16px;align-items:start}
+.ar-group[hidden],.ar-hits li[hidden]{display:none}
+.ar-hits{list-style:none;margin:0;padding:0}
+.ar-hits li{display:flex;flex-direction:column;gap:1px;padding:9px 18px;border-bottom:1px solid var(--line)}
+.ar-hits li:last-child{border-bottom:0}
+.ar-hits a{font-weight:600;color:var(--ink);text-decoration:none;overflow-wrap:anywhere}
+.ar-hits a:hover{color:var(--link);text-decoration:underline}
+.ar-hits .small{overflow-wrap:anywhere}
+/* ==== end builder 1 · ar- ==== */
+/* ==== QA · admin upgrade: tile rows, long buttons and tile values on a 320 screen (admin pages only) ==== */
+/* Six tiles (Operations, Reports, Funds) sit six in a row when they fit, otherwise three and three; four tiles (Listings review,
+   Team and roles, Publishers, Audit log) four in a row or two and two. No tile is left alone on a row. Phones keep two columns. */
+@media (min-width:701px) and (max-width:1340px){
+  .topbar.ar-top + .app-main > .kpis:has(> .kpi:nth-child(6):last-child){grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media (min-width:701px) and (max-width:916px){
+  .topbar.ar-top + .app-main > .kpis:has(> .kpi:nth-child(4):last-child){grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+/* A long button label wraps instead of being cut off (the dispute's Partial refund), and a value such as AED 4,781,538 stays in its tile. */
+@media (max-width:380px){
+  .topbar.ar-top + .app-main .btns .btn:not(.link){white-space:normal;text-align:center;line-height:1.3;padding-top:8px;padding-bottom:8px}
+}
+@media (max-width:340px){
+  .topbar.ar-top + .app-main .kpi{padding-left:12px;padding-right:12px}
+  .topbar.ar-top + .app-main .kpi .v{font-size:15px}
+}
+/* ==== end QA · admin upgrade ==== */
