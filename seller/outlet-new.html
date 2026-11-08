@@ -93,7 +93,8 @@ function problems(st) {
   if (!st.licDoc) add(3, "po-lic-file", "Upload the licence: a PDF or a photo of it.", "the licence document");
   var cur = D.markets[st.market].cur;
   if (st.pay === "group" && cur !== D.group.cur) add(3, "po-pays", "A " + st.market + " outlet is paid out in " + cur + ". Add a " + cur + " account through Stripe Connect.", "a " + cur + " payout account");
-  if (st.pay === "new" && !st.connected) add(3, "po-connect", "Connect the new account through Stripe, or choose " + D.group.bank + ".", "the payout account");
+  if (st.pay === "new" && !st.connected) add(3, "po-connect", cur === D.group.cur ? "Connect the new account through Stripe, or choose " + D.group.bank + "."
+    : "Connect the new " + cur + " account through Stripe.", "the payout account");     /* as _problems(): the AED account is no choice for a KSA outlet */
   return out;
 }
 
