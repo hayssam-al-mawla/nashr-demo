@@ -151,6 +151,13 @@ dl.money dd.tot{color:var(--top-ink)}
 .outlet .meta{font-size:12px;color:var(--muted)}
 .outlet .rng{font-family:var(--font-num);font-size:13px}
 .outlet .foot{display:flex;gap:8px;margin-top:auto;padding-top:4px;flex-wrap:wrap}
+/* the outlet's logo on its card (Outlets) and on its profile; the name is written under or beside it */
+.outlet .o-top{min-height:40px}
+.o-logo{flex:1;min-width:0;height:40px;display:flex;align-items:center}
+.o-logo img,.o-logo-lg img{display:block;max-width:100%;height:auto}
+.outlet .o-name{display:flex;flex-direction:column;gap:1px;line-height:1.3}
+.outlet .o-name b{font-size:15px}
+.o-logo-lg{flex:none;display:grid;place-items:center;min-width:120px;height:72px;padding:12px 18px;background:#fff;border:1px solid var(--line);border-radius:14px}
 .filters{display:flex;flex-direction:column;gap:14px}
 .filters h3{margin:0;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
 .filters .check{font-size:13px}
