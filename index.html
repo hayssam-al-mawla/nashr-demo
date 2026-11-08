@@ -233,6 +233,8 @@
   function fromHash(){if(location.hash==='#request')openForm(open?role:'buyer',{quick:true});}
   window.addEventListener('hashchange',fromHash);
   fromHash();
+  /* the form is open from the start, with Buyer chosen; a door button switches the role and glides to it */
+  if(!open)openForm('buyer',{quick:true});
   form.addEventListener('change',function(e){if(e.target.name==='ld-dr-role')setRole(e.target.value);});
 
   /* light checks, then a demo confirmation in place of the form (nothing is sent or saved) */
