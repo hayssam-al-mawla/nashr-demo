@@ -274,16 +274,53 @@ dl.money dd.tot{color:var(--top-ink)}
 
 /* ------------------------------------------------------------ Market calendar: six months back and ahead (buyer/index.html) */
 .cal [hidden]{display:none!important}
-.cal-nav{display:flex;align-items:center;gap:10px 16px;flex-wrap:wrap;padding:12px 14px;border-bottom:1px solid var(--line)}
-.cal-nav .btns{display:flex;gap:6px;flex-wrap:nowrap}
-.cal-nav .btn:disabled{opacity:.45;cursor:default}
-.cal-range{font-family:var(--font-head);font-size:19px;font-weight:500;min-width:200px}
-.cal-months{display:flex;flex-wrap:wrap;align-items:center;gap:4px;margin-inline-start:auto}
-.cal-months .yr{font-size:11px;font-weight:600;color:var(--muted);margin:0 2px 0 6px}
-.cal-months .yr:first-child{margin-inline-start:0}
-.cal-months button{border:1px solid var(--line-2);background:var(--surface);color:var(--ink);border-radius:999px;padding:4px 10px;font:inherit;font-size:12px;font-weight:600;cursor:pointer}
-.cal-months button.past{color:var(--muted);border-style:dashed}
-.cal-months button[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
+/* the date bar: Earlier / Now / Later, the dates in view, and the strip of twelve months with a frame over the weeks in view */
+.cal-nav{display:flex;flex-direction:column;gap:12px;padding:14px 16px 16px;border-bottom:1px solid var(--line)}
+.mc-top{display:flex;align-items:center;gap:10px 16px;flex-wrap:wrap}
+.mc-pager{display:inline-flex;flex:none;background:#fff;border:1px solid var(--line-2);border-radius:999px;box-shadow:0 1px 2px rgba(22,33,62,.06)}
+.mc-pager button{display:inline-flex;align-items:center;gap:4px;min-height:36px;padding:0 14px;border:0;background:none;font:inherit;font-size:13px;font-weight:600;color:var(--ink);cursor:pointer}
+.mc-pager button + button{border-inline-start:1px solid var(--line-2)}
+.mc-pager button:first-child{border-radius:999px 0 0 999px;padding-inline-start:10px}
+.mc-pager button:last-child{border-radius:0 999px 999px 0;padding-inline-end:10px}
+.mc-pager button:hover:not(:disabled){background:var(--surface-2)}
+.mc-pager button:disabled{color:var(--muted);cursor:default}
+.mc-pager button:disabled svg{opacity:.45}
+.mc-pager button:focus-visible{outline:2px solid var(--gold-deep);outline-offset:-2px}
+.mc-pager svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.mc-title{display:flex;align-items:center;gap:6px 12px;flex-wrap:wrap;min-width:0}
+.cal-range{font-family:var(--font-head);font-size:21px;font-weight:500;line-height:1.2;color:var(--ink)}
+.mc-when{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;color:var(--ink-2);background:var(--surface-2);border:1px solid var(--line);border-radius:999px;padding:3px 10px 3px 8px;white-space:nowrap}
+.mc-when::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--gold)}
+.mc-when[data-when="past"]::before{background:var(--muted)}
+.mc-when[data-when="mix"]::before{background:linear-gradient(90deg,var(--muted) 50%,var(--gold) 50%)}
+.mc-map{position:relative;padding-bottom:15px}
+.mc-years{position:relative;height:17px;font-size:10.5px;font-weight:700;letter-spacing:.06em;color:var(--muted)}
+.mc-years span{position:absolute;top:0;padding-inline-start:5px;border-inline-start:1px solid var(--line-2);line-height:13px}
+.mc-track{position:relative;display:flex;height:34px;border:1px solid var(--line-2);border-radius:10px;background:#fff}
+.mc-track button{flex:1 1 0;min-width:0;padding:0;border:0;background:none;font:inherit;font-size:11.5px;font-weight:600;color:var(--ink-2);cursor:pointer;overflow:hidden;white-space:nowrap}
+.mc-track button + button{border-inline-start:1px solid var(--line)}
+.mc-track button:first-child{border-radius:9px 0 0 9px}
+.mc-track button:last-of-type{border-radius:0 9px 9px 0}
+.mc-track button.past{color:var(--muted);background:repeating-linear-gradient(135deg,transparent 0 5px,rgba(22,33,62,.055) 5px 6px),var(--surface-2)}
+.mc-track button:hover{background:var(--h0);color:var(--ink)}
+.mc-track button:focus-visible{position:relative;z-index:3;outline:2px solid var(--gold-deep);outline-offset:-2px}
+.mc-today{position:absolute;z-index:2;top:-6px;bottom:-6px;width:2px;margin-inline-start:-1px;border-radius:2px;background:var(--gold);pointer-events:none}
+.mc-today i{position:absolute;top:100%;left:50%;transform:translateX(-50%);margin-top:1px;font-style:normal;font-size:10px;font-weight:700;letter-spacing:.04em;color:var(--gold-deep);white-space:nowrap}
+.mc-win{position:absolute;z-index:1;top:-4px;bottom:-4px;border:2px solid var(--ink);border-radius:9px;background:rgba(22,33,62,.07);box-shadow:0 6px 14px -8px rgba(22,33,62,.55);pointer-events:none;transition:left .35s cubic-bezier(.2,.8,.2,1)}
+/* the grid's header: one line under the whole row; the month and year over the first week in view and where a month starts */
+.cal > .cal-r:first-child{border-bottom:1px solid var(--line);padding-bottom:2px}
+.cal > .cal-r:first-child .cal-h{border-bottom:0}
+.cal-h .mo{display:block;font-style:normal;font-size:9.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);line-height:13px;visibility:hidden}
+.cal-h.mo-on .mo{visibility:visible}
+.cal-h.ms:not(.past) .mo{color:var(--ink-2)}
+@media (max-width:600px){
+  .cal-nav{padding:12px 12px 14px}
+  .mc-pager button span{display:none}
+  .mc-pager button{padding:0 12px}
+  .cal-range{font-size:18px}
+  .mc-track button{font-size:10px}
+}
+@media (prefers-reduced-motion:reduce){.mc-win{transition:none}}
 .cal-h.past{color:var(--muted)}
 .cell.past{background:var(--surface-2);border-color:var(--line);color:var(--muted)}
 .cell.past b{color:var(--ink-2)}
