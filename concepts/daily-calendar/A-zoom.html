@@ -1,0 +1,1046 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Market · zoom concept · Nashr</title>
+<link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,500;6..72,600&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&family=Markazi+Text:wght@700&display=swap">
+<link rel="stylesheet" href="../../assets/app.css">
+<link rel="stylesheet" href="../../assets/theme-g.css">
+<style>
+/* Concept A · zoom levels (months, weeks, days). Every class added here starts with dA- ; the rest is G (app.css + theme-g.css). */
+:root{--dA-lab:236px;--dA-oh:52px;--dA-ph:56px;--dA-min:64px;--dA-n:7}
+.dA-note{background:var(--gold-soft);border-bottom:1px solid #E6D2A8;color:var(--ink);font-size:12.5px;line-height:1.45;padding:8px 32px;text-align:center}
+.dA-note b{font-size:10.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--gold-deep);margin-inline-end:6px}
+.dA-note a{margin-inline-start:8px;font-weight:600;white-space:nowrap}
+.dA-panel .panel-h .r{color:var(--muted)}
+.dA-panel .panel-h .r b{font-family:var(--font-num);font-weight:500;color:var(--ink-2)}
+
+/* the zoom control */
+.dA-zbar{display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px;padding:14px 16px;border-bottom:1px solid var(--line)}
+.dA-zoom{display:inline-flex;gap:4px;padding:4px;background:var(--surface-2);border:1px solid var(--line-2);border-radius:12px;max-width:100%}
+.dA-zoom button{display:flex;align-items:center;gap:10px;min-height:46px;padding:6px 16px 6px 10px;border:0;border-radius:9px;background:transparent;font:inherit;color:var(--ink-2);text-align:start;cursor:pointer}
+.dA-zoom button:hover{background:var(--h0)}
+.dA-zoom button:focus-visible{outline:2px solid var(--gold-deep);outline-offset:2px}
+.dA-zoom svg{flex:none;width:30px;height:20px}
+.dA-zoom svg rect{fill:var(--line-2)}
+.dA-zoom b{display:block;font-size:13.5px;line-height:1.2;color:var(--ink)}
+.dA-zoom small{display:block;font-size:11.5px;line-height:1.25;color:var(--muted);white-space:nowrap}
+.dA-zoom [aria-pressed="true"]{background:var(--ink);box-shadow:inset 0 -3px 0 var(--gold)}
+.dA-zoom [aria-pressed="true"]:hover{background:var(--ink)}
+.dA-zoom [aria-pressed="true"] b{color:#fff}
+.dA-zoom [aria-pressed="true"] small{color:#C8CCE0}
+.dA-zoom [aria-pressed="true"] svg rect{fill:#D4A55A}
+.dA-hint{display:flex;align-items:center;flex-wrap:wrap;gap:6px 10px;margin:0;font-size:12.5px;color:var(--ink-2);flex:1 1 420px;min-width:0}
+.dA-hint span{flex:0 1 auto;min-width:0;max-width:calc(100% - 28px)}
+.dA-hint svg{width:18px;height:18px;flex:none;fill:none;stroke:var(--gold-deep);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.dA-hint .btn{min-height:32px}
+
+/* the date bar: G's pager and month strip; the strip doubles as a scrubber with bids per day under the months */
+.mc-track.dA-track{height:52px;background:#fff;touch-action:pan-y}
+.dA-mon{flex:1 1 0;min-width:0;padding-top:6px;font-size:11.5px;font-weight:600;color:var(--ink-2);text-align:center;white-space:nowrap;overflow:hidden;border-inline-start:1px solid var(--line)}
+.dA-mon:first-child{border-inline-start:0;border-radius:9px 0 0 9px}
+.dA-mon:last-of-type{border-radius:0 9px 9px 0}
+.dA-mon.past{color:var(--muted);background:repeating-linear-gradient(135deg,transparent 0 5px,rgba(22,33,62,.055) 5px 6px),var(--surface-2)}
+.dA-dens{position:absolute;left:0;bottom:2px;width:100%;height:20px;pointer-events:none}
+.dA-scrub{position:absolute;inset:0;z-index:3;border-radius:10px;cursor:grab}
+.dA-scrub:active{cursor:grabbing}
+.dA-scrub:focus-visible{outline:2px solid var(--gold-deep);outline-offset:3px}
+.mc-win.dA-win{min-width:8px;transition-property:left,width}
+.dA-cap{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:6px 16px;margin-top:-2px}
+.dA-key{font-size:11.5px;color:var(--muted);white-space:nowrap}
+.dA-cap i{display:inline-block;width:10px;height:10px;border-radius:2px;background:var(--gold);vertical-align:-1px;margin-inline-end:4px}
+.dA-cap i.dA-kp{background:#A3A8BA}
+
+/* filters */
+.dA-filters{display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px;padding:12px 16px;border-bottom:1px solid var(--line)}
+.dA-fg{display:flex;align-items:center;gap:6px;flex-wrap:wrap;min-width:0}
+.dA-fl{font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-inline-end:2px}
+.dA-filters .pills button{min-height:34px;display:inline-flex;align-items:center;gap:6px}
+.dA-filters .pills button:focus-visible{outline:2px solid var(--gold-deep);outline-offset:2px}
+.dA-filters .pills .dA-pn{font-family:var(--font-num);font-size:11px;font-weight:500;opacity:.8}
+.dA-tg::before{content:"";width:12px;height:12px;border:1.5px solid currentColor;border-radius:3px;flex:none;opacity:.7}
+.dA-tg[aria-pressed="true"]::before{content:"\2713";opacity:1;font-size:10px;line-height:10px;text-align:center;border-color:#D4A55A;color:#D4A55A}
+.dA-search{position:relative;display:flex;align-items:center}
+.dA-search svg{position:absolute;left:11px;width:15px;height:15px;fill:none;stroke:var(--muted);stroke-width:2;pointer-events:none}
+.dA-search input{font:inherit;font-size:13px;color:var(--ink);background:#fff;border:1px solid var(--line-2);border-radius:999px;min-height:36px;padding:0 12px 0 33px;width:230px;max-width:100%}
+.dA-search input:focus-visible{outline:2px solid var(--gold-deep);outline-offset:1px}
+.dA-res{display:flex;flex-wrap:wrap;align-items:center;gap:2px 12px;padding:5px 16px;border-bottom:1px solid var(--line);background:var(--surface-2)}
+.dA-count{margin:0;font-size:12.5px;color:var(--ink-2)}
+.dA-ex{margin-inline-start:auto;display:flex;gap:2px}
+.dA-res .btn.link{min-height:32px;font-size:12.5px}
+.dA-res .btn.link:focus-visible{outline:2px solid var(--gold-deep);outline-offset:1px}
+.dA-count b{font-family:var(--font-num);font-weight:500}
+
+/* the grid: one scroll area, a header that stays on top, a label column that stays put, and only the rows on screen */
+.dA-scroll{position:relative;overflow:auto;height:clamp(380px,calc(100vh - 190px),760px);background:var(--surface);overscroll-behavior:contain;scroll-padding-left:calc(var(--dA-lab) + 14px)}
+.dA-grid .cell.dA-dim{opacity:.28}
+.dA-grid .cell.dA-dim:hover,.dA-grid .cell.dA-dim:focus-visible{opacity:.7}
+.dA-scroll:focus-visible{outline:2px solid var(--gold-deep);outline-offset:-2px}
+.dA-grid{position:relative;padding:0 14px 12px;min-width:calc(var(--dA-lab) + var(--dA-n) * (var(--dA-min) + 6px) + 28px)}
+.dA-row{display:grid;grid-template-columns:var(--dA-lab) repeat(var(--dA-n),minmax(var(--dA-min),1fr));column-gap:6px;align-items:center}
+.dA-head{position:sticky;top:0;z-index:4;background:var(--surface);border-bottom:1px solid var(--line);align-items:end}
+.dA-lab{position:sticky;left:0;z-index:2;align-self:stretch;display:flex;align-items:center;gap:8px;min-width:0;background:var(--surface);padding-inline-end:8px}
+.dA-head .dA-lab{z-index:5;font-size:12px;font-weight:600;padding:8px 0 9px;align-items:flex-end;color:var(--ink-2)}
+.dA-h{position:relative;padding:8px 0 7px;text-align:center;font-size:12px;font-weight:600;line-height:1.25;border-radius:6px 6px 0 0;min-width:0}
+.dA-h .mo{display:block;font-style:normal;font-size:9.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);line-height:13px;visibility:hidden}
+.dA-h.mo-on .mo{visibility:visible}
+.dA-h .dA-dl{display:block;font-size:10.5px;font-weight:700;color:var(--muted);letter-spacing:.04em}
+.dA-h .dA-dn{display:block;font-family:var(--font-head);font-size:17px;font-weight:600;line-height:1.15;color:var(--ink)}
+.dA-h .dA-dtag{display:block;font-size:9px;font-weight:600;letter-spacing:.03em;color:var(--warn);min-height:13px;line-height:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 2px}
+.dA-h.past .dA-dn,.dA-h.past{color:var(--muted)}
+.dA-h.dA-we{background:repeating-linear-gradient(135deg,rgba(22,33,62,.06) 0 2px,transparent 2px 7px)}
+.dA-h.dA-td .dA-dtag{color:var(--gold-deep);font-weight:700}
+.dA-h.dA-td::after{content:"";position:absolute;left:50%;bottom:-2px;width:30px;margin-left:-15px;height:4px;background:var(--gold);border-radius:2px}
+.dA-h.dA-hl{background:var(--gold-soft);box-shadow:inset 0 3px 0 var(--gold)}
+.dA-o{height:var(--dA-oh);border-top:1px solid var(--line)}
+.dA-p{height:var(--dA-ph)}
+.dA-tog{flex:none;width:30px;height:30px;display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--line-2);border-radius:8px;background:#fff;color:var(--ink);cursor:pointer;padding:0}
+.dA-tog:hover{border-color:var(--ink)}
+.dA-tog svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .18s}
+.dA-tog[aria-expanded="true"] svg{transform:rotate(90deg)}
+.dA-tog:focus-visible{outline:2px solid var(--gold-deep);outline-offset:1px}
+.dA-on{display:flex;flex-direction:column;min-width:0;line-height:1.25}
+.dA-on b{font-weight:600;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dA-on small{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dA-pl{padding-inline-start:46px;flex-direction:column;align-items:flex-start;justify-content:center;gap:0;font-size:13px;line-height:1.25}
+.dA-pl span,.dA-pl small{max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dA-pl small{font-size:11px;color:var(--muted)}
+.dA-grid .cell{font:inherit;font-size:10.5px;line-height:1.2;width:100%;min-width:0;padding:0 3px;cursor:pointer;position:relative;overflow:hidden;white-space:nowrap}
+.dA-grid .cell b{font-size:13px;line-height:1.25}
+.dA-p .cell{height:calc(var(--dA-ph) - 8px)}
+.dA-o .cell{height:calc(var(--dA-oh) - 14px);font-size:10px;line-height:1.15}
+.dA-o .cell b{font-size:12px}
+.dA-grid .cell b small{font-family:var(--font-ui);font-size:9.5px;font-weight:600;opacity:.75;margin-inline-end:3px}
+.dA-grid .cell:focus-visible{outline:2px solid var(--gold-deep);outline-offset:1px;z-index:1}
+.dA-grid .cell.dA-we{background-image:repeating-linear-gradient(135deg,rgba(22,33,62,.08) 0 2px,transparent 2px 7px)}
+.dA-grid .cell.dA-td{box-shadow:inset 0 3px 0 var(--gold)}
+.dA-grid .cell.sel{box-shadow:0 0 0 2px var(--surface),0 0 0 4px var(--ink)}
+.dA-grid .cell.dA-hasme::after{content:"";position:absolute;top:5px;right:5px;width:8px;height:8px;border-radius:50%;background:var(--me-bg);box-shadow:0 0 0 2px #fff}
+.dA-wk7 .cell.dA-we{background-image:repeating-linear-gradient(135deg,rgba(22,33,62,.08) 0 2px,transparent 2px 7px)}
+.dA-wk7 .cell span{font-size:9.5px;font-weight:600}
+.dA-wc{gap:3px}
+.dA-bar{display:block;flex:none;width:84%;max-width:132px;height:14px;border-radius:3px;background-color:#fff;background-repeat:no-repeat;box-shadow:inset 0 0 0 1px rgba(22,33,62,.16)}
+.dA-empty{padding:40px 16px;text-align:center;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:10px}
+.dA-anim{animation:dA-in .26s ease-out}
+@keyframes dA-in{from{opacity:.15;transform:scale(.985)}to{opacity:1;transform:none}}
+.dA-legend{border-top:1px solid var(--line);padding:12px 16px 14px;align-items:center}
+.dA-legend .dA-bar{display:inline-block;width:62px;vertical-align:middle;margin-inline-end:6px}
+.dA-legend .dA-wk{background:repeating-linear-gradient(135deg,rgba(22,33,62,.18) 0 2px,transparent 2px 6px),var(--h0)}
+.dA-legend .dA-tdk{background:var(--h0);box-shadow:inset 0 3px 0 var(--gold)}
+.dA-drawn{flex-basis:100%;font-size:11.5px;color:var(--muted)}
+
+/* detail: a panel on the right on a computer, a sheet from the bottom on a phone */
+.dA-drawer{position:fixed;z-index:70;top:0;right:0;bottom:0;width:min(420px,100%);display:flex;flex-direction:column;background:var(--surface);border-inline-start:1px solid var(--line);box-shadow:-24px 0 48px -24px rgba(22,33,62,.45)}
+.dA-drawer[hidden],.dA-shade[hidden]{display:none}
+.dA-dhd{display:flex;align-items:flex-start;gap:12px;padding:16px 18px 14px;border-bottom:1px solid var(--line);border-top:3px solid var(--gold)}
+.dA-dhd .t{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
+.dA-dhd .t b{font-size:15px}
+.dA-x{flex:none;width:40px;height:40px;border:1px solid var(--line-2);border-radius:8px;background:#fff;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;color:var(--ink);padding:0}
+.dA-x svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
+.dA-x:focus-visible{outline:2px solid var(--gold-deep);outline-offset:1px}
+.dA-dbd{flex:1;overflow:auto;padding:16px 18px 28px;display:flex;flex-direction:column;gap:14px}
+.dA-day{font-family:var(--font-head);font-size:24px;font-weight:500;line-height:1.15;margin:0}
+.dA-day:focus{outline:none}
+.dA-tagl{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--warn);margin-top:-8px}
+.dA-tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.dA-tile{background:var(--surface-2);border-radius:8px;padding:9px 11px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.dA-tile span{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.dA-tile b{font-family:var(--font-num);font-weight:500;font-size:17px;white-space:nowrap}
+.dA-wk7{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
+.dA-wk7 .cell{height:44px;font:inherit;font-size:9.5px;padding:0;cursor:pointer;line-height:1.15;overflow:hidden}
+.dA-wk7 .cell b{font-size:11px}
+.dA-wk7 .cell:focus-visible{outline:2px solid var(--gold-deep);outline-offset:1px}
+.dA-wk7 .cell.sel{box-shadow:0 0 0 2px var(--surface),0 0 0 4px var(--ink)}
+.dA-presets{display:flex;flex-wrap:wrap;gap:6px}
+.dA-acts{display:flex;flex-direction:column;gap:8px}
+.dA-acts .dA-two{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.dA-acts .btn{white-space:normal;text-align:center}
+.dA-steps{margin:0;padding:0 0 0 18px;font-size:12.5px;color:var(--ink-2);display:flex;flex-direction:column;gap:4px}
+.dA-shade{position:fixed;inset:0;z-index:69;background:rgba(22,33,62,.32)}
+.dA-err{font-size:12px;color:var(--bad);margin:0}
+
+@media (max-width:1100px){:root{--dA-lab:204px}.dA-drawer{top:auto;left:0;right:0;width:100%;max-height:88vh;border-radius:16px 16px 0 0;border-inline-start:0;box-shadow:0 -18px 40px -16px rgba(22,33,62,.45)}.dA-dhd{border-radius:16px 16px 0 0}}
+@media (min-width:1101px){.dA-shade{display:none!important}}
+@media (max-width:700px){
+  :root{--dA-lab:132px;--dA-oh:58px;--dA-ph:54px}
+  .dA-note{padding:8px 16px}
+  .dA-zbar{padding:12px}
+  .dA-zoom{display:flex;width:100%}
+  .dA-zoom button{flex:1 1 0;flex-direction:column;justify-content:center;gap:3px;padding:7px 4px;text-align:center;min-width:0}
+  .dA-zoom small{display:none}
+  .dA-zoom svg{width:26px;height:16px}
+  .dA-hint{font-size:12.5px;flex-basis:100%}
+  .dA-filters{padding:12px;gap:10px}
+  .dA-search{flex:1 1 100%}
+  .dA-search input{width:100%}
+  .dA-res{padding:4px 12px}
+  .dA-key{white-space:normal}
+  .dA-tog{width:36px;height:36px}
+  .dA-o .avatar{display:none}
+  .dA-on b{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;font-size:13px;line-height:1.2}
+  .dA-on small{display:none}
+  .dA-pl{padding-inline-start:8px;font-size:12.5px}
+  .dA-pl span{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;line-height:1.2}
+  .dA-pl small{display:none}
+  .dA-scroll{height:clamp(360px,62vh,620px)}
+  .dA-drawer{top:auto;left:0;right:0;width:100%;max-height:88vh;border-radius:16px 16px 0 0;border-inline-start:0;box-shadow:0 -18px 40px -16px rgba(22,33,62,.45)}
+  .dA-dhd{border-radius:16px 16px 0 0}
+  .dA-cap{font-size:11px}
+}
+@media (max-width:600px){.dA-mon{font-size:10px}}
+@media (max-width:360px){:root{--dA-lab:116px} .dA-zoom b{font-size:12.5px} .dA-tiles{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (pointer:coarse){.dA-filters .pills button{min-height:40px} .dA-tog{width:40px;height:40px} .dA-search input{min-height:42px}}
+@media (prefers-reduced-motion:reduce){.dA-anim{animation:none} .dA-tog svg{transition:none} .mc-win{transition:none} #g-toast{transition:none}}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="topbar-in"><a class="brand" href="../../buyer/index.html"><svg width="24" height="21" viewBox="40 15 120 103" aria-hidden="true"><path d="M45 68 Q100 150 155 68" fill="none" stroke="#EDEEE9" stroke-width="16" stroke-linecap="round"/><rect x="88" y="27" width="24" height="24" fill="#B8863B" transform="rotate(45 100 39)"/></svg><b>Nashr</b><span class="ar" lang="ar">نشر</span></a><nav class="mainnav" aria-label="Main"><a href="A-zoom.html" aria-current="page">Market</a><a href="../../buyer/outlets.html">Outlets</a><a href="../../buyer/campaigns.html">Campaigns</a><a href="../../buyer/athena.html">Athena</a><a href="../../buyer/inbox.html">Inbox<span class="badge">3</span></a><a href="../../buyer/account.html">Account</a></nav><div class="right"><span class="who">Northwind Fintech</span><span class="avatar" aria-hidden="true" style="background:#2A3355;width:30px;height:30px">LH</span></div></div></header>
+<p class="dA-note"><b>Concept:</b> daily calendar at full scale. Demo data. <a href="../../buyer/index.html">See today's Market in option G</a></p>
+<main class="app-main">
+<div class="page-head"><div class="t"><h1 class="page-title">Market</h1><p class="page-sub">Open slots from 50 outlets in the UAE and KSA, every day for a year. Book at the publisher's price, or bid.</p></div>
+<div class="btns"><div class="seg" role="group" aria-label="View"><button type="button" aria-pressed="true">Calendar</button><button type="button" aria-pressed="false" onclick="location.href='../../buyer/outlets.html'">Outlets</button></div></div></div>
+
+<section class="panel dA-panel" aria-labelledby="dA-title">
+<div class="panel-h"><h2 id="dA-title">Bidding calendar · every outlet, every day</h2><span class="r" id="dA-total"></span></div>
+
+<div class="cal-nav" id="dA-nav"><div class="mc-top">
+<div class="dA-zoom" role="group" aria-label="Zoom">
+<button type="button" data-zoom="m" aria-pressed="false"><svg viewBox="0 0 30 20" aria-hidden="true"><rect x="0" y="2" width="14" height="7" rx="1.5"/><rect x="16" y="2" width="14" height="7" rx="1.5"/><rect x="0" y="11" width="14" height="7" rx="1.5"/><rect x="16" y="11" width="14" height="7" rx="1.5"/></svg><span><b>Months</b><small>The year at a glance</small></span></button>
+<button type="button" data-zoom="w" aria-pressed="true"><svg viewBox="0 0 30 20" aria-hidden="true"><rect x="0" y="2" width="9" height="7" rx="1.2"/><rect x="10.5" y="2" width="9" height="7" rx="1.2"/><rect x="21" y="2" width="9" height="7" rx="1.2"/><rect x="0" y="11" width="9" height="7" rx="1.2"/><rect x="10.5" y="11" width="9" height="7" rx="1.2"/><rect x="21" y="11" width="9" height="7" rx="1.2"/></svg><span><b>Weeks</b><small>7 days in every cell</small></span></button>
+<button type="button" data-zoom="d" aria-pressed="false"><svg viewBox="0 0 30 20" aria-hidden="true"><rect x="0" y="1" width="3.2" height="5" rx=".6"/><rect x="4.4" y="1" width="3.2" height="5" rx=".6"/><rect x="8.8" y="1" width="3.2" height="5" rx=".6"/><rect x="13.2" y="1" width="3.2" height="5" rx=".6"/><rect x="17.6" y="1" width="3.2" height="5" rx=".6"/><rect x="22" y="1" width="3.2" height="5" rx=".6"/><rect x="26.4" y="1" width="3.2" height="5" rx=".6"/><rect x="0" y="7.5" width="3.2" height="5" rx=".6"/><rect x="4.4" y="7.5" width="3.2" height="5" rx=".6"/><rect x="8.8" y="7.5" width="3.2" height="5" rx=".6"/><rect x="13.2" y="7.5" width="3.2" height="5" rx=".6"/><rect x="17.6" y="7.5" width="3.2" height="5" rx=".6"/><rect x="22" y="7.5" width="3.2" height="5" rx=".6"/><rect x="26.4" y="7.5" width="3.2" height="5" rx=".6"/><rect x="0" y="14" width="3.2" height="5" rx=".6"/><rect x="4.4" y="14" width="3.2" height="5" rx=".6"/><rect x="8.8" y="14" width="3.2" height="5" rx=".6"/><rect x="13.2" y="14" width="3.2" height="5" rx=".6"/><rect x="17.6" y="14" width="3.2" height="5" rx=".6"/><rect x="22" y="14" width="3.2" height="5" rx=".6"/><rect x="26.4" y="14" width="3.2" height="5" rx=".6"/></svg><span><b>Days</b><small>Every day, every price</small></span></button>
+</div>
+<div class="mc-pager" role="group" aria-label="Move through the calendar"><button type="button" data-go="prev" aria-label="Earlier"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3.5 5.5 8l4.5 4.5"/></svg><span>Earlier</span></button><button type="button" data-go="now">Now</button><button type="button" data-go="next" aria-label="Later"><span>Later</span><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3.5 10.5 8 6 12.5"/></svg></button></div>
+<div class="mc-title"><b class="cal-range" id="dA-range" aria-live="polite"></b><span class="mc-when" id="dA-when" data-when="now"></span></div></div>
+<div class="mc-map"><div class="mc-years" id="dA-years" aria-hidden="true"></div>
+<div class="mc-track dA-track" id="dA-track"><span id="dA-mons" style="display:contents"></span><canvas class="dA-dens" id="dA-dens" aria-hidden="true"></canvas><span class="mc-today" id="dA-today" aria-hidden="true"><i>Today</i></span><span class="mc-win dA-win" id="dA-win" aria-hidden="true"></span><div class="dA-scrub" id="dA-scrub" role="slider" tabindex="0" aria-label="Dates in view"></div></div>
+</div>
+<div class="dA-cap"><p class="dA-hint" id="dA-hint" aria-live="polite"></p><span class="dA-key">Drag the frame to move · <i class="dA-kp"></i>sold per day · <i></i>bids per day</span></div>
+</div>
+
+<div id="dA-filters"><div class="dA-filters">
+<div class="dA-fg"><span class="dA-fl" id="dA-chl">Channel</span><div class="pills" role="group" aria-labelledby="dA-chl" id="dA-ch"></div></div>
+<div class="dA-fg"><span class="dA-fl" id="dA-mkl">Market</span><div class="pills" role="group" aria-labelledby="dA-mkl" id="dA-mk"></div></div>
+<label class="dA-search"><span class="sr">Find an outlet or placement</span><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="4.6"/><path d="m10.5 10.5 3.6 3.6"/></svg><input type="search" id="dA-q" placeholder="Find an outlet or placement" autocomplete="off"></label>
+<div class="dA-fg pills"><button type="button" class="dA-tg" data-tg="open" aria-pressed="false">Open only</button><button type="button" class="dA-tg" data-tg="bids" aria-pressed="false">With bids</button></div>
+</div>
+<div class="dA-res"><p class="dA-count" id="dA-count" aria-live="polite"></p><div class="dA-ex"><button type="button" class="btn link" data-all="1">Expand all</button><button type="button" class="btn link" data-all="0">Collapse all</button></div></div>
+</div>
+
+<div class="dA-scroll" id="dA-scroll" tabindex="-1"><div class="dA-grid" id="dA-grid"><div class="dA-row dA-head" id="dA-head"></div><div id="dA-padt"></div><div id="dA-rows"></div><div id="dA-padb"></div></div></div>
+
+<div class="legend dA-legend" id="dA-legend"></div>
+</section>
+</main>
+<div class="dA-shade" id="dA-shade" hidden></div>
+<aside class="dA-drawer" id="dA-drawer" role="dialog" aria-modal="false" aria-labelledby="dA-dtitle" hidden></aside>
+<div id="g-toast" role="status" aria-live="polite"></div>
+<script>
+(function(){
+'use strict';
+var T0 = performance.now();
+/* ================= the demo world: 50 outlets, 3 to 8 placements each, one cell per placement per day for 52 weeks ================= */
+var DAY = 864e5, D0 = Date.UTC(2026, 4, 4), ND = 364, NW = 52;      // Mon 4 May 2026 to Sun 2 May 2027 (the week of 26 Apr 2027)
+function idx(y, m, d){ return Math.round((Date.UTC(y, m - 1, d) - D0) / DAY); }
+var TODAY = idx(2026, 10, 31);                                         // Sat 31 Oct 2026, 14:36: the demo clock
+var NOW_MIN = 14 * 60 + 36;
+var MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+var MONL = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+var DOWL = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+var DOWS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+var DOW1 = ['M','T','W','T','F','S','S'];
+function dt(i){ return new Date(D0 + i * DAY); }
+function dd(i){ return dt(i).getUTCDate(); }
+function dm(i){ return dt(i).getUTCMonth(); }
+function dy(i){ return dt(i).getUTCFullYear(); }
+function dShort(i){ return dd(i) + ' ' + MON[dm(i)]; }
+function dLong(i){ return DOWL[i % 7] + ' ' + dd(i) + ' ' + MONL[dm(i)] + ' ' + dy(i); }
+
+// Seeded generator (mulberry32): the same world on every load and in every screenshot.
+var seed = 20261031;
+function rnd(){ seed |= 0; seed = seed + 0x6D2B79F5 | 0; var t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }
+
+// Dates that move prices
+var BF = idx(2026, 11, 27), UAEND = idx(2026, 12, 2), KSAND = idx(2026, 9, 23);
+var RAM0 = idx(2027, 2, 8), RAM1 = idx(2027, 3, 8), EID0 = idx(2027, 3, 9), EID1 = idx(2027, 3, 11);
+var ADHA0 = idx(2026, 5, 26), ADHA1 = idx(2026, 5, 29), SUM0 = idx(2026, 7, 1), SUM1 = idx(2026, 8, 31);
+var NY0 = idx(2026, 12, 28), NY1 = idx(2027, 1, 1);
+function dayTag(i){
+  if (i === TODAY) return 'TODAY';
+  if (i === BF) return 'BLACK FRIDAY';
+  if (i === UAEND) return 'UAE NAT. DAY';
+  if (i === KSAND) return 'KSA NAT. DAY';
+  if (i >= EID0 && i <= EID1) return 'EID AL-FITR';
+  if (i >= RAM0 && i <= RAM1) return 'RAMADAN';
+  if (i >= ADHA0 && i <= ADHA1) return 'EID AL-ADHA';
+  if (i === NY1) return 'NEW YEAR';
+  return '';
+}
+var WEEKTAG = {};
+[[2026,5,25,'EID AL-ADHA'],[2026,8,24,'BACK TO SCHOOL'],[2026,9,21,'KSA NAT. DAY'],[2026,10,26,'THIS WEEK'],[2026,11,23,'BLACK FRIDAY'],[2026,11,30,'UAE NAT. DAY'],
+ [2026,12,28,'NEW YEAR'],[2027,2,8,'RAMADAN'],[2027,2,15,'RAMADAN'],[2027,2,22,'RAMADAN'],[2027,3,1,'RAMADAN'],[2027,3,8,'EID AL-FITR']]
+  .forEach(function(t){ WEEKTAG[idx(t[0], t[1], t[2]) / 7] = t[3]; });
+// Months, as on G's strip: a week belongs to the month of its Monday.
+var MONTHS = [];
+for (var w0 = 0; w0 < NW; w0++) {
+  var i0 = w0 * 7, key = dy(i0) * 12 + dm(i0), lastM = MONTHS[MONTHS.length - 1];
+  if (!lastM || lastM.key !== key) MONTHS.push({ key: key, y: dy(i0), m: dm(i0), w0: w0, w1: w0 }); else lastM.w1 = w0;
+}
+MONTHS.forEach(function(M){ M.d0 = M.w0 * 7; M.d1 = M.w1 * 7 + 6; });
+var MONTHTAG = { 'Oct 2026': 'THIS MONTH', 'Nov 2026': 'BLACK FRIDAY', 'Dec 2026': 'UAE NAT. DAY', 'Sep 2026': 'KSA NAT. DAY', 'Feb 2027': 'RAMADAN', 'Mar 2027': 'RAMADAN · EID' };
+
+function seasonOf(i, mkt){
+  var f = 1, a;
+  if (i >= RAM0 && i <= RAM1) f *= 1.3;
+  if (i >= EID0 && i <= EID1) f *= 1.18;
+  a = Math.abs(i - BF); if (a <= 3) f *= 1.3 - a * 0.07;
+  if (mkt === 'UAE') { a = Math.abs(i - UAEND); if (a <= 1) f *= 1.22 - a * 0.08; }
+  if (mkt === 'KSA') { a = Math.abs(i - KSAND); if (a <= 1) f *= 1.25 - a * 0.08; }
+  if (i >= SUM0 && i <= SUM1) f *= 0.86;
+  if (i >= NY0 && i <= NY1) f *= 0.9;
+  if (i >= ADHA0 && i <= ADHA1) f *= 1.1;
+  return f;
+}
+var SEASON = { UAE: new Float32Array(ND), KSA: new Float32Array(ND) };
+for (var s0 = 0; s0 < ND; s0++) { SEASON.UAE[s0] = seasonOf(s0, 'UAE'); SEASON.KSA[s0] = seasonOf(s0, 'KSA'); }
+function isWeekend(mkt, dw){ return mkt === 'UAE' ? dw >= 5 : (dw === 4 || dw === 5); }   // UAE Sat and Sun, KSA Fri and Sat
+function dowF(ch, we){ return !we ? 1 : ch === 'Print' ? 0.8 : ch === 'Digital' ? 0.9 : ch === 'Radio' ? 0.78 : 1.08; }
+
+/* Outlets: the 14 of data.py first (name, initials, colour, market, channel, reach, price range), then 36 made up for this concept.
+   Last field: how many days before the run the bidding closes, at 20:00. Gulf News: 11 (the Full page of Mon 23 Nov closes Thu 12 Nov, 20:00). */
+var OUT = [
+ ['Gulf News','GN','#2F6B4F','UAE','Print','680,000 readers',17800,98300,'Tier 1',11],
+ ['Khaleej Times','KT','#8A4B2A','UAE','Print','410,000 readers',15000,65600,'Tier 1',9],
+ ['The National','TN','#2B4C7E','UAE','Print','350,000 readers',22200,88800,'Tier 1',10],
+ ['Gulf Business TV','GB','#1D3557','UAE','TV','120,000 viewers per day',6500,18000,'Tier 2',4],
+ ['Skyline FM 94.2','SK','#6A4C93','UAE','Radio','95,000 listeners per day',2200,5800,'Tier 2',3],
+ ['Zawya','ZW','#0B6E69','UAE','Digital','2.1m monthly users',9000,24000,'Tier 1',3],
+ ['Arab News','AN','#0E3D35','KSA','Print','290,000 readers',26500,59800,'Tier 1',8],
+ ['Saudi Gazette','SG','#5A3E36','KSA','Print','150,000 readers',14500,36200,'Tier 2',7],
+ ['Argaam','AR','#355070','KSA','Digital','1.4m monthly users',12000,28000,'Tier 1',2],
+ ['Okaz','OK','#7B3F00','KSA','Print','420,000 readers',18000,52000,'Tier 1',9],
+ ['Al Riyadh','RY','#4A6C2F','KSA','Print','260,000 readers',16000,32200,'Tier 2',8],
+ ['Dune FM 99.3','DF','#A33A22','KSA','Radio','210,000 listeners per day',2800,4200,'Tier 2',2],
+ ['Falcon Business TV','FB','#1B4332','KSA','TV','180,000 viewers per day',9000,21000,'Tier 2',5],
+ ['Al Eqtisadiah','AE','#3D405B','KSA','Print','190,000 readers',15000,41000,'Tier 1',7],
+ ['Corniche Herald','CH','#4B5D8C','UAE','Print','120,000 readers',12000,46000,'Tier 2',8],
+ ['Sharjah Evening Post','SE','#7A4E6F','UAE','Print','95,000 readers',9000,30000,'Tier 2',7],
+ ['Creek Business Weekly','CB','#2E6E73','UAE','Print','60,000 readers',8000,26000,'Tier 2',10],
+ ['Al Waha Daily','AW','#8C5A2B','UAE','Print','140,000 readers',11000,42000,'Tier 2',8],
+ ['Souq Pulse','SP','#3F5F3A','UAE','Digital','900,000 monthly users',5000,16000,'Tier 2',2],
+ ['Marina Wire','MW','#355C7D','UAE','Digital','1.2m monthly users',6000,19000,'Tier 2',2],
+ ['Desert Tech Review','DT','#5C4B8A','UAE','Digital','640,000 monthly users',4500,14000,'Tier 2',3],
+ ['Dubai Daily Brief','DB','#2F5D62','UAE','Digital','1.6m monthly users',7000,22000,'Tier 1',2],
+ ['Majlis Money','MM','#6B4F2F','UAE','Digital','480,000 monthly users',4000,12500,'Tier 2',3],
+ ['Falaj Lifestyle','FL','#7B5E57','UAE','Digital','750,000 monthly users',3800,11000,'Tier 2',2],
+ ['Palm Radio 101.4','PR','#4E6E58','UAE','Radio','140,000 listeners per day',1800,5200,'Tier 2',2],
+ ['Corniche FM 88.6','CF','#8A6A2F','UAE','Radio','110,000 listeners per day',1500,4600,'Tier 2',2],
+ ['Oasis Talk 95.8','OT','#5D5A88','UAE','Radio','70,000 listeners per day',1200,3600,'Tier 2',3],
+ ['Dhow FM 103.2','DH','#2B6F8E','UAE','Radio','160,000 listeners per day',2000,5600,'Tier 2',2],
+ ['Creekside TV','CT','#3A4A6B','UAE','TV','260,000 viewers per day',9000,26000,'Tier 1',5],
+ ['Saffron Lifestyle TV','ST','#9A5B2E','UAE','TV','150,000 viewers per day',6000,17000,'Tier 2',4],
+ ['Horizon Sports 2','HS','#245A44','UAE','TV','310,000 viewers per day',11000,34000,'Tier 1',5],
+ ['Lagoon Kids TV','LK','#4F7CAC','UAE','TV','90,000 viewers per day',4000,11000,'Tier 2',4],
+ ['Najd Chronicle','NC','#6E4B3A','KSA','Print','230,000 readers',13000,40000,'Tier 2',8],
+ ['Hejaz Morning','HM','#3B6E8F','KSA','Print','180,000 readers',11000,34000,'Tier 2',7],
+ ['Eastern Province Times','EP','#566B3A','KSA','Print','120,000 readers',9000,28000,'Tier 2',7],
+ ['Al Qasr Weekly','AQ','#7A3E48','KSA','Print','80,000 readers',7000,21000,'Tier 2',9],
+ ['Riyadh Wire','RW','#2F4F6F','KSA','Digital','1.8m monthly users',7000,23000,'Tier 1',2],
+ ['Dalil Markets','DM','#4A5D23','KSA','Digital','820,000 monthly users',5500,17000,'Tier 2',2],
+ ['Tamr Lifestyle','TL','#8B5E3C','KSA','Digital','690,000 monthly users',4000,12000,'Tier 2',3],
+ ['Jeddah Byte','JB','#3C6E71','KSA','Digital','540,000 monthly users',3800,11500,'Tier 2',2],
+ ['Darb Auto','DA','#5B5F97','KSA','Digital','430,000 monthly users',3500,10500,'Tier 2',3],
+ ['Wadi FM 92.1','WF','#9C6644','KSA','Radio','190,000 listeners per day',2200,5400,'Tier 2',2],
+ ['Samar FM 97.7','SM','#5E548E','KSA','Radio','150,000 listeners per day',1900,4800,'Tier 2',2],
+ ['Corals Radio 105.3','CR','#2A7F87','KSA','Radio','120,000 listeners per day',1600,4200,'Tier 2',3],
+ ['Najd Family TV','NF','#4D5B7C','KSA','TV','340,000 viewers per day',10000,30000,'Tier 1',5],
+ ['Al Sahra Drama','SD','#8E4A3A','KSA','TV','280,000 viewers per day',9000,27000,'Tier 1',5],
+ ['Riyadh Sports Live','RS','#1F5F4A','KSA','TV','420,000 viewers per day',13000,40000,'Tier 1',4],
+ ['Hejaz News 24','HN','#3E4C59','KSA','TV','200,000 viewers per day',7000,20000,'Tier 2',3],
+ ['Qamar Kids TV','QK','#6C7FB0','KSA','TV','110,000 viewers per day',4000,12000,'Tier 2',4],
+ ['Asir Movies','AM','#7D5A50','KSA','TV','170,000 viewers per day',6000,18000,'Tier 2',4]
+];
+// Placements per channel: name, what it is, price as a share of the outlet's middle price
+var PT = {
+  Print: [['Front page strip','Daily edition',1.4],['Full page','News section',0.9],['Half page','Business section',0.48],['Quarter page','City section',0.27],
+          ['Back page','Daily edition',1.15],['Weekend magazine page','Weekend magazine',0.75],['Classified banner','Classifieds',0.12],['Inside front page','Daily edition',1.05]],
+  Digital: [['Homepage takeover','24 hours',1.3],['Leaderboard 728 × 90','All pages',0.45],['MPU 300 × 250','Article pages',0.35],['Newsletter sponsor','Morning email',0.6],
+            ['Sponsored article','7 days on the site',0.9],['Mobile interstitial','App and mobile web',0.5],['Pre-roll video 15 s','Video player',0.55],['Section sponsor','Business section',0.7]],
+  Radio: [['Breakfast show 30 s spot','06:30 to 09:00',0.75],['Drive time 30 s spot','17:00 to 19:00',0.7],['Midday 30 s spot','12:00 to 14:00',0.45],['Evening show 30 s spot','19:00 to 22:00',0.4],
+          ['Weather sponsorship','Hourly mentions',1.1],['Traffic report mention','Morning and evening',0.55],['Overnight 30 s spot','00:00 to 06:00',0.25]],
+  TV: [['Prime time 30 s break','20:00 to 23:00',1.0],['Morning show 30 s break','07:00 to 10:00',0.55],['Evening news 30 s break','19:00 to 19:30',0.9],['Late night 30 s break','23:00 to 01:00',0.4],
+       ['Sports half-time 30 s','Live matches',1.2],['Programme sponsorship','Opening and closing billboards',1.5],['Weekend movie 30 s break','Weekend nights',0.8],['Daytime 30 s break','10:00 to 17:00',0.35]]
+};
+var REALP = {   // the placements data.py names for these outlets
+  'Gulf News': [['Front page strip','Every edition',1.4],['Full page','News section',0.9],['Half page','Business section',0.48],['Quarter page','City section',0.27],['Back page','Daily edition',1.15]],
+  'Gulf Business TV': [['Market Open','08:30 to 09:00 · 30 s spot',0.6],['Evening Business Report','19:00 to 19:30 · 30 s spot',0.6],['Midday Markets','12:30 to 13:00 · 30 s spot',0.4],['Weekend Business Review','Sat 18:00 · 30 s spot',0.5]],
+  'Skyline FM 94.2': [['Breakfast Business','06:30 to 09:00 · 30 s spot',0.68],['Drive-Time Business','17:00 to 19:00 · 30 s spot',0.68],['Midday Talk','12:00 to 14:00 · 30 s spot',0.45],['Weather sponsorship','Hourly mentions',1.0]],
+  'Falcon Business TV': [['Market Open','08:30 to 09:00 · 30 s spot',1.27],['Prime time business','21:00 to 22:00 · 30 s spot',1.4],['Late news','23:00 to 23:30 · 30 s spot',0.6]]
+};
+
+var K = { OPEN: 0, BID: 1, CL: 2, ME: 3, TOP: 4, OUT: 5, TK: 6, X: 7, SHUT: 8, PSOLD: 9, PUNSOLD: 10, PUNL: 11, PME: 12 };
+var OUTLETS = [], PL = [];
+OUT.forEach(function(a, oi){
+  var o = { i: oi, name: a[0], ini: a[1], bg: a[2], mkt: a[3], ch: a[4], reach: a[5], lo: a[6], hi: a[7], tier: a[8], lead: a[9],
+            cur: a[3] === 'UAE' ? 'AED' : 'SAR', real: oi < 14, pl: [] };
+  o.pop = (o.tier === 'Tier 1' ? 1.15 : 0.85) * (0.85 + rnd() * 0.3);
+  o.act = 0.7 + rnd() * 0.5; o.unl = rnd() * 0.1;
+  o.hz = o.real || o.tier === 'Tier 1' ? 400 : [56, 84, 120, 400][Math.floor(rnd() * 4)];   // smaller publishers list only 2 to 4 months ahead
+  var mid = Math.sqrt(o.lo * o.hi), list = REALP[o.name];
+  if (!list) {
+    var t = PT[o.ch], n = o.real ? ({ Print: 3 + oi % 2, Digital: 4 + oi % 2, Radio: 3, TV: 3 })[o.ch] : 3 + Math.floor(rnd() * 6);
+    if (o.real) list = t.slice(0, n);
+    else {
+      list = t.slice(0, 2); var rest = t.slice(2);
+      while (list.length < n && rest.length) list.push(rest.splice(Math.floor(rnd() * rest.length), 1)[0]);
+      list.sort(function(x, y){ return t.indexOf(x) - t.indexOf(y); });
+    }
+  }
+  list.forEach(function(p){ var P = { i: PL.length, o: o, name: p[0], meta: p[1], base: mid * p[2], pop: o.pop * (0.75 + 0.45 * Math.min(1, p[2])) }; PL.push(P); o.pl.push(P); });
+  OUTLETS.push(o);
+});
+var NP = PL.length, NC = NP * ND;
+var KD = new Uint8Array(NC), PR = new Uint32Array(NC), OP = new Uint32Array(NC), BD = new Uint8Array(NC);
+function drawBids(lam){ var L = Math.exp(-lam), n = 0, p = rnd(); while (p > L && n < 9) { n++; p *= rnd(); } return n; }
+function r100(v){ return Math.round(v / 100) * 100; }
+PL.forEach(function(P){
+  var o = P.o, L = o.lead, se = SEASON[o.mkt];
+  for (var i = 0; i < ND; i++) {
+    var j = P.i * ND + i, we = isWeekend(o.mkt, i % 7);
+    var base = P.base * dowF(o.ch, we) * se[i] * (0.96 + rnd() * 0.08);
+    OP[j] = r100(base);
+    if (i <= TODAY) {                                   // the past: sold, not sold or not listed (few listings in the early months)
+      var lp = Math.min(0.92, (0.2 + 0.62 * i / TODAY) * o.act);
+      if (rnd() < lp) { if (rnd() < 0.7) { KD[j] = K.PSOLD; PR[j] = r100(base * (1.02 + rnd() * 0.3)); } else KD[j] = K.PUNSOLD; }
+      else KD[j] = K.PUNL;
+      continue;
+    }
+    var ahead = i - TODAY, unl = (ahead > 150 ? 0.3 : ahead > 100 ? 0.1 : 0.025) + o.unl;
+    if (ahead > o.hz || rnd() < unl) { KD[j] = K.X; continue; }   // not listed yet
+    if (i < TODAY + L) {                                // bidding already closed: booked by someone, or closed without a sale
+      var r = rnd(); KD[j] = r < 0.55 ? K.TK : r < 0.993 ? K.SHUT : K.ME; PR[j] = KD[j] === K.SHUT ? 0 : r100(base * (1.05 + rnd() * 0.25)); continue;
+    }
+    var near = ahead < 21 ? 1.35 : ahead < 60 ? 1.05 : ahead < 120 ? 0.7 : 0.4;
+    var b = drawBids(0.6 * P.pop * near * se[i] * se[i]);
+    if (i - L - TODAY <= 1) { KD[j] = K.CL; if (!b) b = 1 + Math.floor(rnd() * 3); }   // bidding closes today or tomorrow at 20:00
+    else if (b && rnd() < 0.006) KD[j] = K.TOP;
+    else if (b && rnd() < 0.006) KD[j] = K.OUT;
+    else KD[j] = b ? K.BID : K.OPEN;
+    BD[j] = b; PR[j] = b ? r100(OP[j] * (1 + 0.04 * b + rnd() * 0.03)) : OP[j];
+  }
+});
+function findP(on, pn){ for (var q = 0; q < PL.length; q++) if (PL[q].o.name === on && PL[q].name === pn) return PL[q]; return null; }
+// The cells the rest of option G already shows (buyer deals, the slot of 23 Nov, past sales of data.py).
+var NOTE = {}, OTH = {};   // OTH: the other buyers' top bid on a day, kept when you bid on it
+[['Gulf News','Front page strip',2026,11,2,K.ME,76000,0,'pay now','Won. Confirm payment by 1 Nov, 11:48. Nothing is charged before you confirm.'],
+ ['Gulf News','Full page',2026,11,9,K.ME,38800,0,'secured','Secured. Creative due 5 Nov, 18:00.'],
+ ['Gulf News','Half page',2026,11,16,K.ME,17800,0,'secured','Secured. Held by Stripe through Nashr until the placement is verified.'],
+ ['Gulf News','Full page',2026,11,23,K.BID,67800,6,'',''],
+ ['Khaleej Times','Full page',2026,12,14,K.TOP,45300,3,'',''],
+ ['The National','Front page strip',2026,12,14,K.OUT,88800,4,'',''],
+ ['Arab News','Front page strip',2026,12,21,K.ME,43300,0,'deciding','Publisher deciding. Arab News has 24 hours to accept.'],
+ ['Falcon Business TV','Market Open',2026,11,23,K.ME,18300,0,'deciding','Publisher deciding. Falcon Business TV has 24 hours to accept.'],
+ ['Khaleej Times','Half page',2026,9,28,K.PME,15200,0,'refunded','Cancelled by the publisher. Refunded in full.'],
+ ['Gulf News','Full page',2026,10,5,K.PUNSOLD,0,0,'',''],
+ ['Gulf News','Full page',2026,10,12,K.PSOLD,45400,0,'',''],
+ ['Gulf News','Full page',2026,10,19,K.PSOLD,33000,0,'',''],
+ ['Gulf News','Full page',2026,10,26,K.PSOLD,35200,0,'',''],
+ ['Gulf News','Front page strip',2026,10,26,K.PSOLD,70000,0,'','']
+].forEach(function(s){
+  var P = findP(s[0], s[1]); if (!P) return;
+  var j = P.i * ND + idx(s[2], s[3], s[4]); KD[j] = s[5]; PR[j] = s[6]; BD[j] = s[7]; if (s[8]) NOTE[j] = [s[8], s[9]];
+});
+var DEAL = { p: findP('Gulf News', 'Full page'), i: idx(2026, 11, 23) };
+DEAL.j = DEAL.p.i * ND + DEAL.i; OP[DEAL.j] = 43500;
+var DEAL_BIDS = [['Bidder F', 67800], ['Bidder E', 63100], ['Bidder D', 57600], ['Bidder C', 52400], ['Bidder B', 48000], ['Bidder A', 44900]];
+
+// ----- reading a cell
+function closeMin(P, i){ return (i - P.o.lead - TODAY) * 1440 + (20 * 60 - NOW_MIN); }
+function left(min){ var d = Math.floor(min / 1440), h = Math.floor(min % 1440 / 60), m = min % 60; return d ? d + 'd ' + h + 'h' : h ? h + 'h ' + m + 'm' : m + 'm'; }
+function kfmt(n){ if (!n) return '-'; var v = n / 1000; return (v >= 100 ? v.toFixed(0) : v.toFixed(1).replace(/\.0$/, '')) + 'k'; }
+function money(n, cur){ return cur + ' ' + Math.round(n).toLocaleString('en-GB'); }
+function biddable(k){ return k <= 2 || k === 4 || k === 5; }
+function bidsTxt(b){ return b + (b === 1 ? ' bid' : ' bids'); }
+function cellInfo(P, i){   // [css classes from G, short label]
+  var j = P.i * ND + i, k = KD[j], b = BD[j];
+  switch (k) {
+    case K.OPEN: return ['', 'open'];
+    case K.BID: return [b >= 6 ? 'b6' : b >= 4 ? 'b4' : b >= 2 ? 'b2' : 'b1', bidsTxt(b)];
+    case K.CL: return ['cl', left(closeMin(P, i))];
+    case K.ME: return ['me', NOTE[j] ? NOTE[j][0] : 'secured'];
+    case K.TOP: return ['top', 'your top bid'];
+    case K.OUT: return ['out', 'outbid'];
+    case K.TK: return ['tk', 'taken'];
+    case K.X: return ['x', 'not listed'];
+    case K.SHUT: return ['x', 'closed'];
+    case K.PSOLD: return ['past', 'sold'];
+    case K.PUNSOLD: return ['past x', 'not sold'];
+    case K.PUNL: return ['past x', 'not listed'];
+    default: return ['me past', NOTE[j] ? NOTE[j][0] : 'yours'];
+  }
+}
+function shownPrice(P, i){ var j = P.i * ND + i, k = KD[j]; return (k === K.TK || k === K.X || k === K.SHUT || k === K.PUNSOLD || k === K.PUNL) ? 0 : PR[j]; }
+// one stripe of a mini bar: colour and height
+function seg(k, b){
+  switch (k) {
+    case K.OPEN: return ['#D9D3C1', 34];
+    case K.BID: return [b >= 6 ? 'var(--h4)' : b >= 4 ? 'var(--h3)' : 'var(--h2)', b >= 6 ? 100 : b >= 4 ? 82 : b >= 2 ? 64 : 50];
+    case K.CL: return ['var(--warn-line)', 100];
+    case K.ME: case K.PME: return ['var(--me-bg)', 100];
+    case K.TOP: return ['var(--top-line)', 100];
+    case K.OUT: return ['var(--bad)', 100];
+    case K.TK: return ['var(--line-2)', 30];
+    case K.PSOLD: return ['#A3A8BA', 60];
+    default: return ['#E4E0D3', 10];
+  }
+}
+function barCSS(segs){
+  var n = segs.length, gap = n > 5 ? 2.4 : 3.2, w = (100 - gap * (n - 1)) / n, im = [], ps = [], sz = [];
+  segs.forEach(function(s, q){ var l = q * (w + gap); im.push('linear-gradient(' + s[0] + ',' + s[0] + ')'); ps.push((l / (100 - w) * 100).toFixed(2) + '% 100%'); sz.push(w.toFixed(2) + '% ' + s[1] + '%'); });
+  return 'background-image:' + im.join(',') + ';background-position:' + ps.join(',') + ';background-size:' + sz.join(',');
+}
+function newAgg(){ return { n: 0, open: 0, bids: 0, min: 0, cl: 0, top: 0, out: 0, me: 0, sold: 0, soldSum: 0, tk: 0 }; }
+function aggP(P, d0, d1, a){
+  for (var i = d0; i <= d1; i++) {
+    var j = P.i * ND + i, k = KD[j]; a.n++;
+    if (biddable(k)) { a.open++; a.bids += BD[j]; if (PR[j] && (!a.min || PR[j] < a.min)) a.min = PR[j]; if (k === K.CL) a.cl++; else if (k === K.TOP) a.top++; else if (k === K.OUT) a.out++; }
+    else if (k === K.ME || k === K.PME) a.me++;
+    else if (k === K.PSOLD) { a.sold++; a.soldSum += PR[j]; }
+    else if (k === K.TK) a.tk++;
+  }
+  return a;
+}
+
+/* ================= the page: zoom, date bar, filters and a grid that draws only the rows on screen ================= */
+function $(id){ return document.getElementById(id); }
+function esc(s){ return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+function chName(c){ return c; }
+var sc = $('dA-scroll'), grid = $('dA-grid'), head = $('dA-head'), rowsEl = $('dA-rows'), padT = $('dA-padt'), padB = $('dA-padb');
+var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+var HOME_W = Math.floor(TODAY / 7) + 1, HOME_D = TODAY - 1, THIS_W = Math.floor(TODAY / 7);
+var S = { z: 'w', d: HOME_D, w: HOME_W, ch: 'all', mk: 'all', q: '', open: false, bids: false, exp: {}, hlw: -1, sel: null, ac: { r: 1, c: 3 } };
+S.exp[0] = true;                                   // Gulf News starts open: the demo's own slot is in it
+var NDAYS = 14, OH = 52, PH = 66, COLS = [], ROWS = [], TOPS = new Float64Array(1), VIS = [], HEADH = 0, RA = -1, RB = -1;
+
+function metrics(){
+  var phone = innerWidth <= 700;
+  OH = phone ? 58 : 52; PH = S.z === 'd' ? (phone ? 54 : 56) : (phone ? 68 : 66);
+  grid.style.setProperty('--dA-oh', OH + 'px'); grid.style.setProperty('--dA-ph', PH + 'px');
+  var lab = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--dA-lab')) || 200;
+  var avail = sc.clientWidth - 28 - lab;
+  NDAYS = avail / 14 >= 66 ? 14 : 7;
+  S.d = Math.max(0, Math.min(ND - NDAYS, S.d)); S.w = Math.max(0, Math.min(NW - 7, S.w));
+  return phone;
+}
+function colMin(phone){ return S.z === 'd' ? 58 : S.z === 'w' ? (phone ? 108 : 120) : (phone ? 80 : 84); }
+function cols(){
+  var c = [], q;
+  if (S.z === 'd') for (q = 0; q < NDAYS; q++) c.push({ d0: S.d + q, d1: S.d + q });
+  else if (S.z === 'w') for (q = 0; q < 7; q++) c.push({ w: S.w + q, d0: (S.w + q) * 7, d1: (S.w + q) * 7 + 6 });
+  else MONTHS.forEach(function(M, k){ c.push({ m: k, d0: M.d0, d1: M.d1 }); });
+  return c;
+}
+function headHTML(C){
+  var h = '<div class="dA-lab">' + (S.z === 'd' ? 'Outlet · placement · day' : S.z === 'w' ? 'Outlet · placement · week of' : 'Outlet · placement · month') + '</div>';
+  C.forEach(function(c, q){
+    var i = c.d0;
+    if (S.z === 'd') {
+      var cls = 'dA-h' + (q === 0 || dd(i) === 1 ? ' mo-on' : '') + (i <= TODAY ? ' past' : '') + (i % 7 >= 4 ? ' dA-we' : '') + (i === TODAY ? ' dA-td' : '') + (S.hlw >= 0 && Math.floor(i / 7) === S.hlw ? ' dA-hl' : '');
+      h += '<div class="' + cls + '"><em class="mo">' + MON[dm(i)] + ' ' + dy(i) + '</em><span class="dA-dl" aria-hidden="true">' + DOW1[i % 7] + '</span><span class="sr">' + DOWL[i % 7] + '</span><span class="dA-dn">' + dd(i) + '</span><span class="dA-dtag">' + shortTag(i) + '</span></div>';
+    } else if (S.z === 'w') {
+      h += '<div class="dA-h' + (q === 0 || dd(i) <= 7 ? ' mo-on' : '') + (i + 6 <= TODAY ? ' past' : '') + (c.w === THIS_W ? ' dA-td' : '') + '"><em class="mo">' + MON[dm(i)] + ' ' + dy(i) + '</em><span class="dA-dn">' + dShort(i) + '</span><span class="dA-dtag">' + (WEEKTAG[c.w] || '') + '</span></div>';
+    } else {
+      var M = MONTHS[c.m];
+      h += '<div class="dA-h mo-on' + (M.w1 < THIS_W ? ' past' : '') + (TODAY >= M.d0 && TODAY <= M.d1 ? ' dA-td' : '') + '"><em class="mo">' + M.y + '</em><span class="dA-dn">' + MON[M.m] + '</span><span class="dA-dtag">' + (MONTHTAG[MON[M.m] + ' ' + M.y] || '') + '</span></div>';
+    }
+  });
+  return h;
+}
+var SHORT = { 'BLACK FRIDAY': 'BLACK FRI', 'UAE NAT. DAY': 'UAE DAY', 'KSA NAT. DAY': 'KSA DAY', 'EID AL-FITR': 'EID', 'EID AL-ADHA': 'EID' };
+function shortTag(i){ var t = dayTag(i); return SHORT[t] || t; }
+function viewRange(){ return [COLS[0].d0, COLS[COLS.length - 1].d1]; }
+function buildRows(){
+  var q = S.q.trim().toLowerCase(), v = viewRange(), out = [], nO = 0, nP = 0, nM = 0; VIS = [];
+  OUTLETS.forEach(function(o){
+    if (S.ch !== 'all' && o.ch !== S.ch) return;
+    if (S.mk !== 'all' && o.mkt !== S.mk) return;
+    var nameHit = !q || o.name.toLowerCase().indexOf(q) >= 0;
+    var pls = o.pl.filter(function(P){
+      if (!nameHit && P.name.toLowerCase().indexOf(q) < 0) return false;
+      if (S.open || S.bids) { var m = matchDays(P, v[0], v[1]); if (!m) return false; nM += m; }
+      return true;
+    });
+    if (!pls.length) return;
+    nO++; nP += pls.length; VIS.push.apply(VIS, pls);
+    var ex = !!S.exp[o.i] || (!!q && !nameHit);
+    out.push({ t: 0, o: o, pls: pls, ex: ex });
+    if (ex) pls.forEach(function(P){ out.push({ t: 1, o: o, P: P }); });
+  });
+  ROWS = out; S.nO = nO; S.nP = nP; S.nM = nM;
+  TOPS = new Float64Array(out.length + 1);
+  for (var r = 0; r < out.length; r++) TOPS[r + 1] = TOPS[r] + (out[r].t ? PH : OH);
+}
+function matches(k, b){ return (!S.open || biddable(k)) && (!S.bids || b > 0); }
+function matchDays(P, d0, d1){ var n = 0; for (var i = d0; i <= d1; i++) { var j = P.i * ND + i; if (matches(KD[j], BD[j])) n++; } return n; }
+function dimAgg(a){ return (S.open && !a.open) || (S.bids && !a.bids) ? ' dA-dim' : ''; }
+function heat(avg){ return avg <= 0 ? '' : avg < 0.35 ? 'b1' : avg < 1 ? 'b2' : avg < 2 ? 'b4' : 'b6'; }
+function ti(r, q){ return r === S.ac.r && q === S.ac.c ? '0' : '-1'; }
+function periodText(c){ return S.z === 'd' ? dLong(c.d0) : S.z === 'w' ? 'week of ' + dd(c.d0) + ' ' + MONL[dm(c.d0)] + ' ' + dy(c.d0) : MONL[MONTHS[c.m].m] + ' ' + MONTHS[c.m].y; }
+function statusText(P, i){
+  var j = P.i * ND + i, k = KD[j], b = BD[j], cur = P.o.cur;
+  switch (k) {
+    case K.OPEN: return 'open, no bids yet, opening price ' + money(PR[j], cur);
+    case K.BID: return bidsTxt(b) + ', top bid ' + money(PR[j], cur);
+    case K.CL: return bidsTxt(b) + ', top bid ' + money(PR[j], cur) + ', bidding closes in ' + left(closeMin(P, i));
+    case K.ME: return 'yours, ' + (NOTE[j] ? NOTE[j][0] : 'secured') + ', ' + money(PR[j], cur);
+    case K.TOP: return 'your top bid, ' + money(PR[j], cur);
+    case K.OUT: return 'you were outbid, top bid ' + money(PR[j], cur);
+    case K.TK: return 'taken by another buyer';
+    case K.X: return 'not listed yet';
+    case K.SHUT: return 'bidding closed, not sold';
+    case K.PSOLD: return 'sold on Nashr for ' + money(PR[j], cur);
+    case K.PUNSOLD: return 'listed, not sold';
+    case K.PUNL: return 'not listed on Nashr';
+    default: return 'yours, ' + (NOTE[j] ? NOTE[j][0] : '') + ', ' + money(PR[j], cur);
+  }
+}
+function dayLabel(P, i){ return P.o.name + ', ' + P.name + ', ' + dLong(i) + ': ' + statusText(P, i) + (isWeekend(P.o.mkt, i % 7) ? ', weekend' : '') + '.'; }
+function dayCell(P, i, q, r){
+  var j = P.i * ND + i, inf = cellInfo(P, i);
+  var cls = 'cell dA-c ' + inf[0] + (isWeekend(P.o.mkt, i % 7) ? ' dA-we' : '') + (i === TODAY ? ' dA-td' : '') + (S.sel && S.sel.j === j ? ' sel' : '') + ((S.open || S.bids) && !matches(KD[j], BD[j]) ? ' dA-dim' : '');
+  return '<button type="button" class="' + cls + '" data-act="day" data-r="' + r + '" data-c="' + q + '" tabindex="' + ti(r, q) + '" aria-label="' + esc(dayLabel(P, i)) + '"><b>' + kfmt(shownPrice(P, i)) + '</b>' + esc(inf[1]) + '</button>';
+}
+function weekSeg(P, w){
+  var a = aggP(P, w * 7, w * 7 + 6, newAgg());
+  if (a.me) return seg(K.ME); if (a.cl) return seg(K.CL); if (a.top) return seg(K.TOP); if (a.out) return seg(K.OUT);
+  if (a.bids) return seg(K.BID, a.bids >= 12 ? 6 : a.bids >= 6 ? 4 : 2);
+  if (a.open) return seg(K.OPEN); if (a.sold) return seg(K.PSOLD); if (a.tk) return seg(K.TK); return seg(K.X);
+}
+function sumParts(a, c, many){   // [css, line 1, line 2, sentence]
+  var cur = c.cur, l1, l2, cls, s;
+  if (a.open) {
+    l1 = '<small>from</small>' + kfmt(a.min); cls = heat(a.bids / a.n);
+    l2 = S.z === 'w' && !many ? a.open + ' of ' + a.n + ' open · ' + bidsTxt(a.bids) : a.bids ? bidsTxt(a.bids) : a.open + ' open';
+    s = 'from ' + money(a.min, cur) + ', ' + a.open + ' of ' + a.n + ' open, ' + bidsTxt(a.bids);
+  } else if (a.sold) {
+    l1 = '<small>avg</small>' + kfmt(a.soldSum / a.sold); cls = 'past'; l2 = a.sold + ' of ' + a.n + ' sold';
+    s = a.sold + ' of ' + a.n + ' sold, on average ' + money(a.soldSum / a.sold, cur);
+  } else {
+    l1 = '-'; cls = c.past ? 'past x' : a.me ? 'tk' : 'x'; l2 = a.me ? 'yours' : a.tk ? a.tk + ' taken' : c.past ? 'none sold' : 'none open';
+    s = a.me ? 'nothing open, ' + a.me + ' yours' : a.tk ? 'nothing open, ' + a.tk + ' taken' : 'nothing open';
+  }
+  if (a.me) { cls += ' dA-hasme'; if (a.open || a.sold) s += ', ' + a.me + ' yours'; }
+  if (a.cl) s += ', bidding closes within 48 hours on ' + a.cl;
+  return [cls, l1, l2, s];
+}
+function spanCell(P, c, q, r){
+  var a = aggP(P, c.d0, c.d1, newAgg()), segs = [], i, w;
+  if (S.z === 'w') for (i = c.d0; i <= c.d1; i++) segs.push(seg(KD[P.i * ND + i], BD[P.i * ND + i]));
+  else for (w = MONTHS[c.m].w0; w <= MONTHS[c.m].w1; w++) segs.push(weekSeg(P, w));
+  var p = sumParts(a, { cur: P.o.cur, past: c.d1 <= TODAY }, false);
+  var lab = P.o.name + ', ' + P.name + ', ' + periodText(c) + ': ' + p[3] + '. ' + (S.z === 'w' ? 'Press to see the 7 days.' : 'Press to see its weeks.');
+  return '<button type="button" class="cell dA-c dA-wc ' + p[0] + dimAgg(a) + '" data-act="span" data-r="' + r + '" data-c="' + q + '" tabindex="' + ti(r, q) + '" aria-label="' + esc(lab) + '"><b>' + p[1] + '</b><i class="dA-bar" style="' + barCSS(segs) + '"></i><span>' + p[2] + '</span></button>';
+}
+function sumCell(R, c, q, r){
+  var a = newAgg(); R.pls.forEach(function(P){ aggP(P, c.d0, c.d1, a); });
+  var p = sumParts(a, { cur: R.o.cur, past: c.d1 <= TODAY }, true);
+  var what = S.z === 'd' ? (R.ex ? 'Press to hide its placements.' : 'Press to show its placements.') : S.z === 'w' ? 'Press to see the 7 days.' : 'Press to see its weeks.';
+  var lab = R.o.name + ', all ' + R.pls.length + ' placements, ' + periodText(c) + ': ' + p[3] + '. ' + what;
+  return '<button type="button" class="cell dA-c dA-sum ' + p[0] + dimAgg(a) + (S.z === 'd' && isWeekend(R.o.mkt, c.d0 % 7) ? ' dA-we' : '') + (S.z === 'd' && c.d0 === TODAY ? ' dA-td' : '') + '" data-act="sum" data-r="' + r + '" data-c="' + q + '" tabindex="' + ti(r, q) + '" aria-label="' + esc(lab) + '"><b>' + p[1] + '</b><span>' + p[2] + '</span></button>';
+}
+function rowHTML(r){
+  var R = ROWS[r], o = R.o, h;
+  if (!R.t) {
+    h = '<div class="dA-row dA-o"><div class="dA-lab"><button type="button" class="dA-tog" data-act="tog" data-r="' + r + '" aria-expanded="' + R.ex + '" aria-label="' + (R.ex ? 'Hide' : 'Show') + ' the ' + R.pls.length + ' placements of ' + esc(o.name) + '"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3.5 10.5 8 6 12.5"/></svg></button>'
+      + '<span class="avatar" aria-hidden="true" style="background:' + o.bg + ';width:24px;height:24px;font-size:10px">' + o.ini + '</span><span class="dA-on"><b>' + esc(o.name) + '</b><small>' + o.ch + ' · ' + o.mkt + ' · ' + o.cur + ' · ' + R.pls.length + (R.pls.length === 1 ? ' placement' : ' placements') + '</small></span></div>';
+    COLS.forEach(function(c, q){ h += sumCell(R, c, q, r); });
+  } else {
+    var P = R.P;
+    h = '<div class="dA-row dA-p"><div class="dA-lab dA-pl"><span>' + esc(P.name) + '</span><small>' + esc(P.meta) + '</small></div>';
+    COLS.forEach(function(c, q){ h += S.z === 'd' ? dayCell(P, c.d0, q, r) : spanCell(P, c, q, r); });
+  }
+  return h + '</div>';
+}
+function rowAt(y){ var lo = 0, hi = ROWS.length - 1, ans = ROWS.length - 1; while (lo <= hi) { var mid = (lo + hi) >> 1; if (TOPS[mid + 1] > y) { ans = mid; hi = mid - 1; } else lo = mid + 1; } return ans; }
+function render(force){
+  var n = ROWS.length, st = sc.scrollTop - HEADH, vh = sc.clientHeight;
+  if (!n) {
+    RA = RB = -1; padT.style.height = padB.style.height = '0px';
+    rowsEl.innerHTML = '<div class="dA-empty"><b>No outlet matches these filters.</b><button type="button" class="btn sm" data-act="clear">Clear filters</button></div>';
+    drawnNote(0, 0); return;
+  }
+  var a = rowAt(Math.max(0, st - 160)), b = rowAt(st + vh + 160);
+  if (!force && a === RA && b === RB) return;
+  var ae = document.activeElement, had = rowsEl.contains(ae), tog = had && ae.classList.contains('dA-tog') ? ae.getAttribute('data-r') : null;
+  // the one cell in the Tab order must be a drawn one: after a scroll, it moves to the first row in view
+  if (S.ac.r < a || S.ac.r > b) { var fr = rowAt(sc.scrollTop); if (TOPS[fr] < sc.scrollTop - 1 && fr < b) fr++; S.ac.r = Math.max(a, Math.min(b, fr)); }
+  RA = a; RB = b;
+  padT.style.height = TOPS[a] + 'px'; padB.style.height = (TOPS[n] - TOPS[b + 1]) + 'px';
+  var h = ''; for (var r = a; r <= b; r++) h += rowHTML(r);
+  rowsEl.innerHTML = h;
+  if (had) { var el = (tog !== null && rowsEl.querySelector('.dA-tog[data-r="' + tog + '"]')) || activeEl(); if (el) el.focus({ preventScroll: true }); }
+  drawnNote(b - a + 1, (b - a + 1) * (COLS.length + 1));
+}
+function activeEl(){ return rowsEl.querySelector('.dA-c[data-r="' + S.ac.r + '"][data-c="' + S.ac.c + '"]'); }
+function drawnNote(rows, cells){
+  var el = $('dA-drawn'); if (!el) return;
+  el.textContent = 'Drawn right now: ' + rows + ' of ' + ROWS.length + ' rows (' + cells + ' cells). The grid holds ' + NC.toLocaleString('en-GB') + ' day cells; rows are drawn as they scroll into view.';
+}
+
+/* ----- date bar: pager, dates in view, the 12-month strip with bids per day, a frame over what is in view, drag to scrub */
+var prevB = document.querySelector('[data-go="prev"]'), nowB = document.querySelector('[data-go="now"]'), nextB = document.querySelector('[data-go="next"]');
+var whenEl = $('dA-when'), rangeEl = $('dA-range'), winEl = $('dA-win'), scrub = $('dA-scrub'), track = $('dA-track');
+var WHEN = { d: { now: 'Today and the days ahead', past: 'Past days: what each slot sold for', mix: 'Past and coming days', ahead: 'Coming days' },
+             w: { now: 'Next 7 weeks', past: 'Past weeks: what each slot sold for', mix: 'Past and coming weeks', ahead: 'Coming weeks' },
+             m: { now: 'The whole year, 52 weeks' } };
+function isHome(){ return S.z === 'm' || (S.z === 'd' ? S.d === HOME_D : S.w === HOME_W); }
+function rangeText(a, b){ return dd(a) + ' ' + MON[dm(a)] + (dy(a) !== dy(b) ? ' ' + dy(a) : '') + ' to ' + dd(b) + ' ' + MON[dm(b)] + ' ' + dy(b); }
+function updateNav(){
+  var v = viewRange(), a = v[0], b = v[1], k = isHome() ? 'now' : b <= TODAY ? 'past' : a > TODAY ? 'ahead' : 'mix';
+  rangeEl.textContent = S.z === 'm' ? 'May 2026 to Apr 2027' : rangeText(a, b);
+  whenEl.setAttribute('data-when', S.z === 'm' ? 'mix' : k); whenEl.textContent = WHEN[S.z][k] || WHEN[S.z].now;
+  prevB.disabled = S.z === 'm' || (S.z === 'd' ? S.d <= 0 : S.w <= 0);
+  nextB.disabled = S.z === 'm' || (S.z === 'd' ? S.d >= ND - NDAYS : S.w >= NW - 7);
+  nowB.disabled = isHome();
+  winEl.style.left = (a / ND * 100).toFixed(3) + '%'; winEl.style.width = ((b - a + 1) / ND * 100).toFixed(3) + '%';
+  scrub.hidden = S.z === 'm';
+  scrub.setAttribute('aria-valuemin', '0'); scrub.setAttribute('aria-valuemax', String(S.z === 'd' ? ND - NDAYS : NW - 7));
+  scrub.setAttribute('aria-valuenow', String(S.z === 'd' ? S.d : S.w)); scrub.setAttribute('aria-valuetext', rangeText(a, b));
+  scrub.setAttribute('aria-label', S.z === 'd' ? 'Days in view' : 'Weeks in view');
+  scrub.title = S.z === 'd' ? 'The frame covers the ' + NDAYS + ' days in view. Drag it, or click any day of the year.'
+    : S.z === 'w' ? 'The frame covers the 7 weeks in view. Drag it, or click any month.' : 'All twelve months are in view.';
+}
+function buildStrip(){
+  var yrs = '', mons = '', seen = {};
+  MONTHS.forEach(function(M){
+    if (!seen[M.y]) { seen[M.y] = 1; yrs += '<span style="left:' + (M.d0 / ND * 100).toFixed(3) + '%">' + M.y + '</span>'; }
+    mons += '<span class="dA-mon' + (M.w1 <= THIS_W ? ' past' : '') + '" style="flex:' + (M.w1 - M.w0 + 1) + '">' + MON[M.m] + '</span>';
+  });
+  $('dA-years').innerHTML = yrs; $('dA-mons').innerHTML = mons;
+  $('dA-today').style.left = ((TODAY + 0.5) / ND * 100).toFixed(3) + '%';
+}
+function drawDensity(){
+  var cv = $('dA-dens'), w = cv.clientWidth, h = cv.clientHeight, dpr = window.devicePixelRatio || 1;
+  if (!w || !h) return;
+  cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr);
+  var g = cv.getContext('2d'); g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, w, h);
+  var fut = new Float32Array(ND), past = new Float32Array(ND), mf = 1, mp = 1, i;
+  VIS.forEach(function(P){ var base = P.i * ND; for (var x = 0; x < ND; x++) { var k = KD[base + x]; if (x <= TODAY) { if (k === K.PSOLD || k === K.PME) past[x]++; } else fut[x] += BD[base + x]; } });
+  for (i = 0; i < ND; i++) { if (fut[i] > mf) mf = fut[i]; if (past[i] > mp) mp = past[i]; }
+  var bw = w / ND;
+  for (i = 0; i < ND; i++) {
+    var v = i <= TODAY ? past[i] / mp : fut[i] / mf; if (!v) continue;
+    var bh = Math.max(1.5, v * (h - 3));
+    g.fillStyle = i <= TODAY ? '#A3A8BA' : '#C9902B';
+    g.fillRect(i * bw + 0.15, h - bh, Math.max(0.6, bw - 0.3), bh);
+  }
+}
+/* ----- zoom, filters, counts */
+var HINT = { m: 'Each cell sums up a month. Click a month to see its weeks.',
+             w: 'Each cell sums up 7 days: lowest open price, days open, bids, one stripe per day. Click a week to see its days.',
+             d: 'Each cell is one day, with its own price and bids. Click a day to bid or book.' };
+var HINT_ICON = '<svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="8.5" cy="8.5" r="5.5"/><path d="m13 13 4.5 4.5M8.5 6v5M6 8.5h5"/></svg>';
+function updateZoomUI(){
+  [].forEach.call(document.querySelectorAll('[data-zoom]'), function(b){ b.setAttribute('aria-pressed', String(b.getAttribute('data-zoom') === S.z)); });
+  $('dA-hint').innerHTML = HINT_ICON + '<span>' + HINT[S.z] + '</span>' + (S.z !== 'm' ? '<button type="button" class="btn sm" data-zoomout>' + (S.z === 'd' ? 'Back to weeks' : 'Back to months') + '</button>' : '');
+}
+function filtersOn(){ return S.ch !== 'all' || S.mk !== 'all' || !!S.q.trim() || S.open || S.bids; }
+function updateCount(){
+  $('dA-count').innerHTML = 'Showing <b>' + S.nO + '</b> of ' + OUTLETS.length + ' outlets · <b>' + S.nP + '</b> of ' + NP + ' placements'
+    + (S.open || S.bids ? ' · <b>' + S.nM.toLocaleString('en-GB') + '</b> ' + (S.open && S.bids ? 'open days with bids' : S.open ? 'open days' : 'days with bids') + ' in view' : '')
+    + (filtersOn() ? ' · <button type="button" class="btn link" data-act="clear">Clear filters</button>' : '');
+}
+function pills(list, key, cur){
+  return list.map(function(x){ return '<button type="button" data-' + key + '="' + x[0] + '" aria-pressed="' + (cur === x[0]) + '">' + x[1] + (x[2] != null ? ' <span class="dA-pn">' + x[2] + '</span>' : '') + '</button>'; }).join('');
+}
+function countOf(f){ return OUTLETS.filter(f).length; }
+function syncFilters(){
+  [].forEach.call(document.querySelectorAll('[data-ch]'), function(x){ x.setAttribute('aria-pressed', String(x.getAttribute('data-ch') === S.ch)); });
+  [].forEach.call(document.querySelectorAll('[data-mk]'), function(x){ x.setAttribute('aria-pressed', String(x.getAttribute('data-mk') === S.mk)); });
+  [].forEach.call(document.querySelectorAll('[data-tg]'), function(x){ x.setAttribute('aria-pressed', String(!!S[x.getAttribute('data-tg')])); });
+}
+function clearFilters(){ S.ch = 'all'; S.mk = 'all'; S.q = ''; $('dA-q').value = ''; S.open = S.bids = false; syncFilters(); }
+function findRow(o, P){ for (var r = 0; r < ROWS.length; r++) if (ROWS[r].o === o && (P ? ROWS[r].P === P : !ROWS[r].t)) return r; return -1; }
+function apply(opt){
+  opt = opt || {};
+  var phone = metrics();
+  COLS = cols();
+  grid.style.setProperty('--dA-n', String(COLS.length)); grid.style.setProperty('--dA-min', colMin(phone) + 'px');
+  head.innerHTML = headHTML(COLS); HEADH = head.offsetHeight; sc.style.scrollPaddingTop = HEADH + 'px';
+  buildRows();
+  if (opt.top) sc.scrollTop = 0;
+  var an = opt.anchor;
+  if (an) { var r2 = findRow(an.o, an.P); if (r2 < 0) r2 = findRow(an.o, null); if (r2 >= 0) { sc.scrollTop = Math.max(0, TOPS[r2] - an.off); S.ac = { r: r2, c: an.c || 0 }; } }
+  S.ac.r = Math.max(0, Math.min(S.ac.r, ROWS.length - 1)); S.ac.c = Math.max(0, Math.min(S.ac.c, COLS.length - 1));
+  render(true);
+  updateNav(); updateZoomUI(); updateCount();
+  if (!opt.nodens) drawDensity();
+  if (opt.anim && !reduced) { rowsEl.classList.remove('dA-anim'); void rowsEl.offsetWidth; rowsEl.classList.add('dA-anim'); }
+  if (opt.focus) { var el = activeEl(); if (el) { ensureX(el); el.focus({ preventScroll: true }); } }
+}
+function setZoom(z){
+  if (z === S.z) return;
+  var r = Math.max(0, Math.min(RA < 0 ? 0 : rowAt(sc.scrollTop + 1), ROWS.length - 1)), R = ROWS[r];
+  var an = R ? { o: R.o, P: R.t ? R.P : null, off: TOPS[r] - sc.scrollTop, c: 0 } : null;
+  if (z === 'd') S.d = S.z === 'w' ? (S.w === HOME_W ? HOME_D : S.w * 7) : HOME_D;
+  if (z === 'w') S.w = S.z === 'd' ? (S.d === HOME_D ? HOME_W : Math.floor(S.d / 7)) : HOME_W;
+  S.hlw = -1; S.z = z;
+  apply({ anim: true, anchor: an });
+}
+document.querySelector('.dA-zoom').addEventListener('click', function(e){ var b = e.target.closest('[data-zoom]'); if (b) setZoom(b.getAttribute('data-zoom')); });
+$('dA-hint').addEventListener('click', function(e){ if (e.target.closest('[data-zoomout]')) { setZoom(S.z === 'd' ? 'w' : 'm'); var p = document.querySelector('[data-zoom][aria-pressed="true"]'); if (p) p.focus(); } });
+$('dA-nav').addEventListener('click', function(e){
+  var b = e.target.closest('[data-go]'); if (!b || b.disabled) return;
+  var g = b.getAttribute('data-go');
+  if (g === 'now') { S.d = HOME_D; S.w = HOME_W; } else { var st = g === 'prev' ? -1 : 1; if (S.z === 'd') S.d += st * NDAYS; else S.w += st * 7; }
+  S.hlw = -1; apply({ anim: true });
+  if (b.disabled) { var t = b === prevB ? nextB : prevB; (t.disabled ? nowB : t).focus(); }
+});
+$('dA-filters').addEventListener('click', function(e){
+  var b = e.target.closest('button'); if (!b) return;
+  if (b.hasAttribute('data-ch')) S.ch = b.getAttribute('data-ch');
+  else if (b.hasAttribute('data-mk')) S.mk = b.getAttribute('data-mk');
+  else if (b.hasAttribute('data-tg')) { var t = b.getAttribute('data-tg'); S[t] = !S[t]; }
+  else if (b.hasAttribute('data-all')) { var on = b.getAttribute('data-all') === '1'; OUTLETS.forEach(function(o){ S.exp[o.i] = on; }); }
+  else if (b.getAttribute('data-act') === 'clear') { clearFilters(); $('dA-q').focus(); }
+  else return;
+  syncFilters(); apply({ top: true });
+});
+var qT = 0;
+$('dA-q').addEventListener('input', function(){ var v = this.value; clearTimeout(qT); qT = setTimeout(function(){ S.q = v; apply({ top: true }); }, 120); });
+/* ----- the grid: click to zoom in one level, or to open a day; arrow keys move between cells */
+rowsEl.addEventListener('click', function(e){
+  var b = e.target.closest('[data-act]'); if (!b) return;
+  var act = b.getAttribute('data-act');
+  if (act === 'clear') { clearFilters(); apply({ top: true }); return; }
+  var r = +b.getAttribute('data-r'), R = ROWS[r]; if (!R) return;
+  if (act === 'tog') {
+    S.exp[R.o.i] = !R.ex; apply({ anchor: { o: R.o, P: null, off: TOPS[r] - sc.scrollTop, c: S.ac.c } });
+    var t = rowsEl.querySelector('.dA-tog[data-r="' + findRow(R.o, null) + '"]'); if (t) t.focus({ preventScroll: true }); return;
+  }
+  var c = +b.getAttribute('data-c'), col = COLS[c]; S.ac = { r: r, c: c };
+  if (act === 'day') { openDetail(R.P, col.d0); return; }
+  var an = { o: R.o, P: R.t ? R.P : null, off: TOPS[r] - sc.scrollTop, c: 0 };
+  if (act === 'sum' && S.z === 'd') { S.exp[R.o.i] = !R.ex; an.c = c; apply({ anchor: an, focus: true }); return; }
+  if (!R.t) S.exp[R.o.i] = true;
+  if (S.z === 'w') { S.z = 'd'; metrics(); S.d = Math.max(0, Math.min(ND - NDAYS, col.w * 7)); S.hlw = col.w; an.c = col.w * 7 - S.d; }
+  else { S.z = 'w'; S.w = Math.max(0, Math.min(NW - 7, MONTHS[col.m].w0)); S.hlw = -1; an.c = MONTHS[col.m].w0 - S.w; }
+  apply({ anim: true, anchor: an, focus: true });
+});
+function focusCell(r, c){
+  S.ac = { r: r, c: c };
+  var y0 = TOPS[r], y1 = TOPS[r + 1], top = sc.scrollTop, vis = sc.clientHeight - HEADH;
+  if (y0 < top) sc.scrollTop = y0; else if (y1 > top + vis) sc.scrollTop = y1 - vis;
+  render(true); var el = activeEl(); if (el) { ensureX(el); el.focus({ preventScroll: true }); }
+}
+function ensureX(el){   // keep a cell clear of the sticky label column and of the right edge
+  var c = el.getBoundingClientRect(), s = sc.getBoundingClientRect(), lab = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--dA-lab')) || 0;
+  if (c.left < s.left + lab + 14) sc.scrollLeft -= s.left + lab + 14 - c.left; else if (c.right > s.right - 4) sc.scrollLeft += c.right - s.right + 4;
+}
+rowsEl.addEventListener('keydown', function(e){
+  var t = e.target.closest('.dA-c'); if (!t) return;
+  var r = +t.getAttribute('data-r'), c = +t.getAttribute('data-c'), n = COLS.length, k = e.key, nr = r, nc = c;
+  if (k === 'ArrowRight') nc++; else if (k === 'ArrowLeft') nc--; else if (k === 'ArrowDown') nr++; else if (k === 'ArrowUp') nr--;
+  else if (k === 'Home') nc = 0; else if (k === 'End') nc = n - 1; else if (k === 'PageDown') nr += 8; else if (k === 'PageUp') nr -= 8;
+  else if (k === 'Escape') { closeDetail(); return; } else return;
+  e.preventDefault();
+  if ((nc < 0 || nc >= n) && S.z !== 'm') {             // past the edge: move the dates by one day or one week
+    var st = nc < 0 ? -1 : 1;
+    if (S.z === 'd') { if ((st < 0 && S.d <= 0) || (st > 0 && S.d >= ND - NDAYS)) return; S.d += st; } else { if ((st < 0 && S.w <= 0) || (st > 0 && S.w >= NW - 7)) return; S.w += st; }
+    S.hlw = -1; S.ac = { r: r, c: nc < 0 ? 0 : n - 1 }; apply({ focus: true }); return;
+  }
+  focusCell(Math.max(0, Math.min(ROWS.length - 1, nr)), Math.max(0, Math.min(n - 1, nc)));
+});
+rowsEl.addEventListener('focusin', function(e){   // a cell that gets focus becomes the one in the Tab order
+  var t = e.target.closest && e.target.closest('.dA-c'); if (!t) return;
+  var r = +t.getAttribute('data-r'), c = +t.getAttribute('data-c'); if (r === S.ac.r && c === S.ac.c) return;
+  var old = activeEl(); S.ac = { r: r, c: c }; if (old && old !== t) old.tabIndex = -1; t.tabIndex = 0;
+});
+var sraf = 0;
+sc.addEventListener('scroll', function(){ if (!sraf) sraf = requestAnimationFrame(function(){ sraf = 0; render(false); }); }, { passive: true });
+var dragging = false, pendX = null, praf = 0;
+function seek(x){
+  var b = track.getBoundingClientRect(), f = Math.max(0, Math.min(0.9999, (x - b.left) / b.width)), day = Math.floor(f * ND);
+  if (S.z === 'd') S.d = day - Math.floor(NDAYS / 2); else S.w = Math.floor(day / 7) - 3;
+  S.hlw = -1; apply({ nodens: true });
+}
+scrub.addEventListener('pointerdown', function(e){ if (S.z === 'm') return; dragging = true; try { scrub.setPointerCapture(e.pointerId); } catch (x) {} seek(e.clientX); });
+scrub.addEventListener('pointermove', function(e){ if (!dragging) return; pendX = e.clientX; if (!praf) praf = requestAnimationFrame(function(){ praf = 0; if (dragging) seek(pendX); }); });
+scrub.addEventListener('pointerup', function(){ dragging = false; });
+scrub.addEventListener('pointercancel', function(){ dragging = false; });
+scrub.addEventListener('keydown', function(e){
+  var k = e.key, pg = S.z === 'd' ? NDAYS : 7, d = 0;
+  if (k === 'ArrowRight' || k === 'ArrowUp') d = 1; else if (k === 'ArrowLeft' || k === 'ArrowDown') d = -1;
+  else if (k === 'PageUp') d = pg; else if (k === 'PageDown') d = -pg; else if (k === 'Home') d = -999; else if (k === 'End') d = 999; else return;
+  e.preventDefault(); if (S.z === 'd') S.d += d; else S.w += d; S.hlw = -1; apply({ nodens: true });
+});
+var rT = 0;
+window.addEventListener('resize', function(){ clearTimeout(rT); rT = setTimeout(function(){ apply({}); }, 120); });
+
+/* ----- one day: the detail panel (right on a computer, a sheet on a phone). Every action is a demo. */
+var drawer = $('dA-drawer'), shade = $('dA-shade');
+function fmt(n){ return Math.round(n).toLocaleString('en-GB'); }
+function up100(v){ return Math.ceil(v / 100) * 100; }
+function toast(title, msg){
+  var t = $('g-toast');
+  t.innerHTML = '<b>' + title + '</b> ' + msg + ' <span>Demo: nothing is sent.</span>';
+  t.className = 'show'; clearTimeout(t._h); t._h = setTimeout(function(){ t.className = ''; }, 5200);
+}
+function sameDays(P, i){   // the same weekday in the last 4 past weeks: what it went for
+  var out = [], x = i - 7; while (x > TODAY) x -= 7;
+  for (; x >= 0 && out.length < 4; x -= 7) { var k = KD[P.i * ND + x]; out.push(dShort(x) + ' ' + (k === K.PSOLD || k === K.PME ? kfmt(PR[P.i * ND + x]) : k === K.PUNSOLD ? 'not sold' : 'not listed')); }
+  return out;
+}
+function chipFor(P, i){
+  var j = P.i * ND + i, k = KD[j], b = BD[j];
+  switch (k) {
+    case K.OPEN: return ['plain', 'Open · no bids yet'];
+    case K.BID: return ['gold', 'Open · ' + bidsTxt(b)];
+    case K.CL: return ['warn', 'Closes in ' + left(closeMin(P, i))];
+    case K.ME: return ['dark', 'Yours · ' + (NOTE[j] ? NOTE[j][0] : 'secured')];
+    case K.TOP: return ['ok', 'Your top bid'];
+    case K.OUT: return ['bad', 'Outbid'];
+    case K.TK: return ['', 'Taken'];
+    case K.X: return ['', 'Not listed yet'];
+    case K.SHUT: return ['', 'Closed'];
+    case K.PSOLD: return ['', 'Sold'];
+    case K.PUNSOLD: return ['', 'Not sold'];
+    case K.PUNL: return ['', 'Not listed'];
+    default: return ['dark', 'Yours · ' + (NOTE[j] ? NOTE[j][0] : '')];
+  }
+}
+function tile(l, v){ return '<div class="dA-tile"><span>' + l + '</span><b>' + v + '</b></div>'; }
+function detailHTML(P, i){
+  var o = P.o, j = P.i * ND + i, k = KD[j], b = BD[j], cur = o.cur, tag = j === DEAL.j ? 'BLACK / WHITE FRIDAY WEEK' : dayTag(i), ch = chipFor(P, i);
+  var h = '<div class="dA-dhd"><span class="avatar" aria-hidden="true" style="background:' + o.bg + ';width:36px;height:36px">' + o.ini + '</span>'
+    + '<div class="t"><b id="dA-dtitle">' + esc(o.name + ' · ' + P.name) + '</b><span class="muted small">' + esc(P.meta) + ' · ' + o.ch + ' · ' + o.mkt + ' · ' + esc(o.reach) + '</span></div>'
+    + '<button type="button" class="dA-x" data-d="close" aria-label="Close"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg></button></div><div class="dA-dbd">';
+  h += '<div><h3 class="dA-day" tabindex="-1">' + dLong(i) + '</h3>' + (tag && tag !== 'TODAY' ? '<p class="dA-tagl" style="margin:10px 0 0">' + tag + '</p>' : '') + '</div>';
+  h += '<p style="margin:0;display:flex;flex-wrap:wrap;gap:8px;align-items:center"><span class="chip ' + ch[0] + '">' + ch[1] + '</span>' + (isWeekend(o.mkt, i % 7) ? '<span class="muted small">Weekend in ' + o.mkt + '</span>' : '') + '</p>';
+  if (biddable(k)) {
+    if (k === K.OUT && b < 2) b = 2;   // outbid: you and at least one other bidder
+    var top = PR[j], open = OP[j], cm = closeMin(P, i), ref = b ? top : open, min = b ? up100(top * 1.03) : up100(open), p5 = up100(ref * 1.05), p10 = up100(ref * 1.1), book = Math.ceil(open * 1.72 / 1000) * 1000;
+    // the other bidders stay as they were before your bid; when you lead, you are the top row (as in G's ladder)
+    var mine = k === K.TOP, nb = (mine || k === K.OUT) ? b - 1 : b, hi = mine ? (OTH[j] || up100(top / 1.03)) : top;
+    var bids = j === DEAL.j ? DEAL_BIDS.slice(0) : [];
+    if (!bids.length) for (var q = 0; q < Math.min(nb, 3); q++) bids.push(['Bidder ' + String.fromCharCode(64 + nb - q), up100(hi * (1 - 0.055 * q))]);
+    if (mine) bids.unshift(['You', top, 1]);
+    if (k === K.OUT) bids.splice(1, 0, ['You', up100(top / 1.03), 1]);
+    h += '<div class="dA-tiles">' + tile(b ? 'Top bid' : 'Opening price', fmt(ref)) + tile('Bidders', b) + tile('Closes in', left(cm)) + '</div>';
+    if (bids.length) {
+      var lrows = bids.slice(0, 3), SH = ['var(--h4)', 'var(--h3)', 'var(--h2)', 'var(--h1)'];
+      h += '<div><p class="eyebrow" style="margin:0 0 6px">Bid ladder</p><div class="ladder">';
+      lrows.forEach(function(x, q){ h += '<div><span' + (x[2] ? ' class="you"' : '') + '>' + x[0] + '</span><i style="width:' + Math.max(6, Math.round(x[1] / top * 100)) + '%;background:' + (x[2] ? 'var(--top-line)' : SH[q]) + '"></i><span class="r">' + fmt(x[1]) + '</span></div>'; });
+      h += '<div><span>Start</span><i style="width:' + Math.max(6, Math.round(open / top * 100)) + '%;background:' + SH[lrows.length] + '"></i><span class="r">' + fmt(open) + '</span></div></div>'
+        + '<p class="note" style="margin-top:6px">Bidders are anonymous to each other. ' + esc(o.name) + ' sees who they are before accepting.</p></div>';
+    }
+    if (k === K.TOP) h += '<p class="callout ok" style="margin:0"><b class="k">You lead with ' + money(top, cur) + '.</b></p>';
+    if (k === K.OUT) h += '<p class="callout bad" style="margin:0">Another buyer bid ' + money(top, cur) + '. Bid again to lead.</p>';
+    h += '<p class="note">Bidding closes ' + DOWS[(i - o.lead) % 7] + ' ' + dShort(i - o.lead) + ', 20:00. Same weekday, past weeks: ' + sameDays(P, i).join(' · ') + '.</p>';
+    h += '<label class="field">Your bid · ' + cur + ', VAT included<input class="num" id="dA-amt" inputmode="numeric" autocomplete="off" value="' + fmt(min) + '"></label>'
+      + '<div class="pills dA-presets" role="group" aria-label="Quick amounts">'
+      + '<button type="button" data-d="amt" data-v="' + min + '" aria-pressed="true">' + (b ? 'Min +3%' : 'Opening price') + ' · ' + fmt(min) + '</button>'
+      + '<button type="button" data-d="amt" data-v="' + p5 + '" aria-pressed="false">+5% · ' + fmt(p5) + '</button>'
+      + '<button type="button" data-d="amt" data-v="' + p10 + '" aria-pressed="false">+10% · ' + fmt(p10) + '</button></div>'
+      + '<p class="dA-err" id="dA-err" role="alert" hidden></p>'
+      + '<div class="dA-acts"><button type="button" class="btn primary lg block" data-d="bid" data-min="' + min + '" id="dA-bidbtn">Place bid · ' + money(min, cur) + '</button>'
+      + '<div class="dA-two"><button type="button" class="btn" data-d="book" data-v="' + book + '">Book now · ' + money(book, cur) + '</button><button type="button" class="btn" data-d="watch">Watch this day</button></div></div>'
+      + '<div><p class="eyebrow" style="margin:0 0 6px">If you win</p><ol class="dA-steps"><li>' + esc(o.name) + ' has 24 hours to accept.</li>'
+      + '<li>You confirm payment within 48 hours, by card or bank transfer. Nothing is charged before you confirm.</li>'
+      + '<li>The payment is held by Stripe through Nashr until the placement is verified.</li><li>You approve the proof, then the publisher is paid.</li></ol></div>';
+  } else if (k === K.ME || k === K.PME) {
+    h += '<div class="dA-tiles">' + tile('Price', fmt(PR[j])) + tile('Currency', cur) + tile('Status', esc(NOTE[j] ? NOTE[j][0] : 'secured')) + '</div>'
+      + '<p class="callout" style="margin:0">' + esc(NOTE[j] ? NOTE[j][1] : 'Secured. Held by Stripe through Nashr until the placement is verified.') + '</p>'
+      + '<a class="btn block" href="../../buyer/' + (NOTE[j] && NOTE[j][0] === 'pay now' ? 'deal.html">Open the deal to confirm payment' : k === K.PME ? 'account.html">See it in Account' : 'campaigns.html">See it in Campaigns') + '</a>';
+  } else if (k === K.TK) {
+    h += '<p class="callout" style="margin:0">Booked by another buyer. What other buyers pay stays private.</p><button type="button" class="btn block" data-d="watch">Tell me if it frees up</button>';
+  } else if (k === K.X) {
+    h += '<p class="callout" style="margin:0">' + esc(o.name) + ' has not listed this day yet.</p><button type="button" class="btn block" data-d="quote">Ask ' + esc(o.name) + ' for a quote</button>';
+  } else if (k === K.SHUT) {
+    h += '<p class="callout" style="margin:0">Bidding closed on ' + dShort(i - o.lead) + ' without a sale. The day runs on ' + dShort(i) + '.</p>';
+  } else {
+    var sd = sameDays(P, i);   // the same weekday in the weeks before this day, not the day itself
+    h += (k === K.PSOLD ? '<div class="dA-tiles">' + tile('Sold for', fmt(PR[j])) + tile('Currency', cur) + tile('Day', DOWS[i % 7]) + '</div>' : '')
+      + '<p class="callout" style="margin:0">' + (k === K.PSOLD ? 'Sold on Nashr for ' + money(PR[j], cur) + '.' : k === K.PUNSOLD ? 'Listed on Nashr, not sold.' : 'Not listed on Nashr that day.') + ' Past days are a record, so you can see what this placement goes for.</p>'
+      + (sd.length ? '<p class="note">Same weekday, the weeks before: ' + sd.join(' · ') + '.</p>' : '');
+  }
+  var w0 = Math.floor(i / 7) * 7;
+  h += '<div><p class="eyebrow" style="margin:0 0 6px">The week of ' + dShort(w0) + ' · this placement</p><div class="dA-wk7">';
+  for (var x = w0; x < w0 + 7; x++) {
+    var inf = cellInfo(P, x);
+    h += '<button type="button" class="cell ' + inf[0] + (isWeekend(o.mkt, x % 7) ? ' dA-we' : '') + (x === i ? ' sel' : '') + '" data-d="pick" data-i="' + x + '" aria-label="' + esc(dayLabel(P, x)) + '"' + (x === i ? ' aria-current="date"' : '') + '><span>' + DOWS[x % 7] + '</span><b>' + kfmt(shownPrice(P, x)) + '</b></button>';
+  }
+  h += '</div></div><a class="small" href="../../buyer/slot.html"><b>Open the full slot page in option G</b></a></div>';
+  return h;
+}
+function openDetail(P, i, keepFocusOn){
+  S.sel = { P: P, i: i, j: P.i * ND + i };
+  drawer.innerHTML = detailHTML(P, i); drawer.hidden = false; shade.hidden = innerWidth > 1100;
+  render(true);
+  var f = keepFocusOn ? drawer.querySelector(keepFocusOn) : drawer.querySelector('.dA-day'); if (f) f.focus({ preventScroll: true });
+}
+function closeDetail(){
+  if (drawer.hidden) return;
+  drawer.hidden = true; shade.hidden = true; S.sel = null; render(true);
+  var el = activeEl(); if (el) el.focus({ preventScroll: true });
+}
+drawer.addEventListener('click', function(e){
+  var b = e.target.closest('[data-d]'); if (!b || !S.sel) return;
+  var d = b.getAttribute('data-d'), P = S.sel.P, i = S.sel.i, j = S.sel.j, o = P.o, amt = $('dA-amt');
+  if (d === 'close') { closeDetail(); return; }
+  if (d === 'pick') { openDetail(P, +b.getAttribute('data-i'), '.dA-wk7 [aria-current]'); return; }
+  if (d === 'amt') { amt.value = fmt(+b.getAttribute('data-v')); syncAmt(); return; }
+  if (d === 'bid') {
+    var v = parseInt(amt.value.replace(/[^0-9]/g, ''), 10) || 0, min = +b.getAttribute('data-min'), err = $('dA-err');
+    if (v < min) { err.hidden = false; err.textContent = 'Bid at least ' + money(min, o.cur) + '.'; amt.focus(); return; }
+    if (KD[j] !== K.TOP) { if (BD[j]) OTH[j] = PR[j]; BD[j] = Math.min(250, BD[j] + 1); }
+    KD[j] = K.TOP; PR[j] = v; openDetail(P, i); drawDensity();
+    toast('Bid placed', esc(o.name + ' · ' + P.name + ', ' + dShort(i)) + ' · <span class="num">' + money(v, o.cur) + '</span>.'); return;
+  }
+  if (d === 'book') {
+    var bp = +b.getAttribute('data-v');
+    KD[j] = K.ME; PR[j] = bp; BD[j] = 0;
+    NOTE[j] = ['requested', 'Booking request sent at ' + money(bp, o.cur) + '. ' + o.name + ' has 24 hours to accept. Then you confirm payment. Nothing is charged before you confirm.'];
+    openDetail(P, i); drawDensity();
+    toast('Booking request sent', esc(o.name + ' · ' + P.name + ', ' + dShort(i)) + ' · <span class="num">' + money(bp, o.cur) + '</span>.'); return;
+  }
+  if (d === 'watch') { toast('Watching', esc(o.name + ' · ' + P.name + ', ' + dShort(i)) + '. You would hear about new bids and changes.'); return; }
+  if (d === 'quote') { toast('Quote request sent', 'to ' + esc(o.name) + ' for ' + esc(P.name) + ', ' + dShort(i) + '.'); }
+});
+function syncAmt(){
+  var amt = $('dA-amt'), btn = $('dA-bidbtn'); if (!amt || !btn || !S.sel) return;
+  var v = parseInt(amt.value.replace(/[^0-9]/g, ''), 10) || 0, cur = S.sel.P.o.cur;
+  btn.textContent = 'Place bid · ' + money(v, cur); $('dA-err').hidden = true;
+  [].forEach.call(drawer.querySelectorAll('[data-d="amt"]'), function(x){ x.setAttribute('aria-pressed', String(+x.getAttribute('data-v') === v)); });
+}
+drawer.addEventListener('input', function(e){ if (e.target.id === 'dA-amt') syncAmt(); });
+shade.addEventListener('click', closeDetail);
+document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && !drawer.hidden) { e.preventDefault(); closeDetail(); } });
+
+/* ----- start */
+$('dA-total').innerHTML = '<b>' + OUTLETS.length + '</b> outlets · <b>' + NP + '</b> placements · <b>' + ND + '</b> days · <b>' + NC.toLocaleString('en-GB') + '</b> day cells';
+$('dA-ch').innerHTML = pills([['all', 'All', OUTLETS.length], ['Print', 'Print', countOf(function(o){ return o.ch === 'Print'; })], ['Digital', 'Digital', countOf(function(o){ return o.ch === 'Digital'; })],
+  ['Radio', 'Radio', countOf(function(o){ return o.ch === 'Radio'; })], ['TV', 'TV', countOf(function(o){ return o.ch === 'TV'; })]], 'ch', S.ch);
+$('dA-mk').innerHTML = pills([['all', 'Both'], ['UAE', 'UAE', countOf(function(o){ return o.mkt === 'UAE'; })], ['KSA', 'KSA', countOf(function(o){ return o.mkt === 'KSA'; })]], 'mk', S.mk);
+var LEG_SEGS = [seg(K.OPEN), seg(K.BID, 2), seg(K.BID, 6), seg(K.CL), seg(K.TK), seg(K.ME), seg(K.X)];
+$('dA-legend').innerHTML = '<span><i style="background:var(--h0)"></i><i style="background:var(--h2)"></i><i style="background:var(--h4)"></i>Bids: 0 to 6+</span>'
+  + '<span><i style="background:var(--me-bg)"></i>Yours (won or booked)</span>'
+  + '<span><i style="background:var(--warn-bg);border-color:var(--warn-line)"></i>Bidding closes within 48h</span>'
+  + '<span><i style="background:var(--top-bg);border-color:var(--top-line)"></i>Your top bid</span>'
+  + '<span><i style="background:var(--bad-bg);border-color:var(--bad)"></i>Outbid</span>'
+  + '<span><i style="background:var(--surface-2);border-color:var(--line)"></i>Past: what it sold for</span>'
+  + '<span><i style="border-style:dashed;background:transparent"></i>Closed, not sold or not listed</span>'
+  + '<span><i class="dA-wk"></i>Weekend: UAE Sat and Sun, KSA Fri and Sat</span>'
+  + '<span><i class="dA-tdk"></i>Today, 31 Oct</span>'
+  + '<span><span class="dA-bar" style="' + barCSS(LEG_SEGS) + '"></span>In a week cell, one stripe per day: taller means more bids, navy is yours, a dot means a day is yours</span>'
+  + '<span class="dA-drawn" id="dA-drawn"></span>';
+buildStrip();
+S.ac = { r: 2, c: 3 };
+apply({});
+window.dAConcept = { outlets: OUTLETS.length, placements: NP, days: ND, cells: NC, ms: Math.round(performance.now() - T0) };
+})();
+</script>
+</body>
+</html>

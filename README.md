@@ -18,7 +18,8 @@ The switch at the bottom of every page moves between the landing page and the th
 ## Also try
 
 - **The Market calendar** (the buyer's front page) pages six months back, showing what each slot sold for, and six months ahead to the end of April 2027, Ramadan included. Use **Earlier**, **Later** or a month.
-- **My profile**: click the avatar at the top right on any of the three sites to add a photo or change the password. The photo stays in your browser only.
+- **My profile**: click the avatar at the top right on any of the three sites: photo, details, saved cards and bank accounts, password and security, notifications. The photo stays in your browser only.
+- **Daily calendar concept**: [concepts/daily-calendar/A-zoom.html](https://hayssam-al-mawla.github.io/nashr-demo/concepts/daily-calendar/A-zoom.html) shows how the Market calendar holds a price for every day of the year across 50 outlets: zoom from months to weeks to days, filter, and open any day to bid (demo data).
 
 ## Try one deal end to end
 
